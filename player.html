@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchFreeSerial</title>
+    <title>WatchFreeSerial007</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
     <style>
         :root {
@@ -76,8 +76,8 @@
         #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 22px; margin: 0 0 10px 0; font-weight: 600; }
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
-        #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background-color: var(--bg-color); transition: opacity 0.5s ease-out; opacity: 0; pointer-events: none; }
-        #loader-screen.visible { opacity: 1; pointer-events: all; }
+        #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background-color: var(--bg-color); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
+        #loader-screen.hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -95,10 +95,6 @@
                 <span id="center-play-pause-text"></span>
             </button>
             <div id="floating-buttons-container" class="hidden">
-                <button id="rotate-btn" class="action-btn floating-btn hidden" aria-label="Toggle Rotation">
-                    <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg>
-                    <span>Rotate</span>
-                </button>
                 <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen">
                     <svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg>
                     <span>Exit Fullscreen</span>
@@ -111,6 +107,10 @@
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg>
                 <svg id="pause-icon" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg>
                 <span id="play-pause-text"></span>
+            </button>
+            <button id="rotate-btn" class="action-btn btn-secondary" aria-label="Toggle Rotation">
+                <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg>
+                <span>Rotate</span>
             </button>
             <button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen">
                 <svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg>
@@ -148,7 +148,7 @@
         
         let activityTimer, autoRotateTimer, centerButtonTimer;
         let environment = 'desktop';
-        let hasForceUnmuted = false; // Flag for the unmute check
+        let hasForceUnmuted = false;
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -157,7 +157,6 @@
             clearTimeout(activityTimer);
             if (isPlayerInFullscreen()) {
                 floatingButtonsContainer.classList.remove('hidden');
-                rotateBtn.classList.toggle('hidden', environment === 'desktop');
                 const hideDelay = isInitial === true ? 10000 : 4000;
                 activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay);
             } else {
@@ -183,12 +182,7 @@
         }
         
         function intelligentRotation() {
-            // Check if device is already landscape
-            if (window.matchMedia("(orientation: landscape)").matches) {
-                console.log("Device is already in landscape. Skipping forced rotation.");
-                return;
-            }
-            // If portrait, apply our rotation
+            if (window.matchMedia("(orientation: landscape)").matches) return;
             playerWrapper.classList.add('force-rotate');
         }
 
@@ -197,6 +191,7 @@
             if (environment !== 'desktop') {
                 autoRotateTimer = setTimeout(intelligentRotation, 5000);
             }
+            player.play(); // Ensure video plays when entering fullscreen
         }
         function handleExitFullscreen() {
             updateFloatingButtonsVisibility(false);
@@ -205,8 +200,10 @@
         
         function setupEventListeners() {
             const playerContainer = player.elements.container;
-            playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
-            playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
+            [playerContainer, centerPlayPauseBtn].forEach(el => {
+                el.addEventListener('mousemove', () => { if (isPlayerInFullscreen()) updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
+                el.addEventListener('touchstart', () => { if (isPlayerInFullscreen()) updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
+            });
 
             fullscreenBtn.addEventListener('click', () => {
                 if (isPlayerInFullscreen()) {
@@ -228,14 +225,10 @@
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
             
-            // New: Force unmute check
-            player.on('timeupdate', () => {
-                if (!hasForceUnmuted && player.currentTime > 1.5) {
-                    if (player.muted) {
-                        player.muted = false;
-                        console.log("Player was muted, forcefully unmuted.");
-                    }
-                    hasForceUnmuted = true; // Ensure this only runs once
+            player.on('playing', () => {
+                if (!hasForceUnmuted && player.muted) {
+                    player.muted = false;
+                    hasForceUnmuted = true;
                 }
             });
         }
@@ -252,10 +245,21 @@
             } catch (error) { throw new Error(error.message); }
         }
 
+        function startPlayback() {
+            loaderScreen.classList.add('hidden');
+            const playPromise = player.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.warn("Autoplay was blocked. UI will show 'Resume'.", error);
+                    // UI is already updated by the 'pause' event, so user knows to click.
+                });
+            }
+        }
+
         async function main() {
-            loaderScreen.classList.add('visible'); // Make loader visible immediately
             environment = getEnvironment();
             setupEventListeners();
+            rotateBtn.classList.toggle('hidden', environment === 'desktop');
             
             const today = new Date();
             const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -276,15 +280,13 @@
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
                 await Promise.all([videoCanPlayPromise, minimumWaitPromise]);
                 clearInterval(countdownInterval);
-                loaderScreen.classList.remove("visible");
-                player.play().catch((e) => {}); // Autoplay starts here
+                startPlayback();
             } catch (error) {
                 clearInterval(countdownInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
 
-        // Run the main function immediately on script load
         main();
     </script>
 </body>
