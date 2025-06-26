@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchFreeSerial</title>
+    <title>WatchFreeSerial0008</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
     <style>
         :root {
@@ -78,6 +78,9 @@
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
         #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background-color: var(--bg-color); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
         #loader-screen.hidden { opacity: 0; pointer-events: none; }
+        /* FIXED: Added missing styles for loader content */
+        #countdown-timer { font-size: 48px; font-weight: 700; color: var(--primary-accent); }
+        #loading-text { color: var(--text-secondary); font-size: 16px; text-align: center; }
     </style>
 </head>
 <body>
@@ -182,17 +185,14 @@
         }
         
         function intelligentRotation() {
-            if (window.matchMedia("(orientation: landscape)").matches) {
-                console.log("Device is already in landscape. Skipping forced rotation.");
-                return;
-            }
+            if (window.matchMedia("(orientation: landscape)").matches) { return; }
             playerWrapper.classList.add('force-rotate');
         }
 
         function handleEnterFullscreen() {
             updateFloatingButtonsVisibility(true);
             if (environment !== 'desktop') {
-                autoRotateTimer = setTimeout(intelligentRotation, 5000);
+                autoRotateTimer = setTimeout(intelligentRotation, 2000); // Changed to 2 seconds
             }
         }
         function handleExitFullscreen() {
@@ -210,7 +210,7 @@
                     if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } 
                     else if (player.fullscreen.active) player.fullscreen.exit();
                 } else {
-                    player.play(); // Ensure video plays when entering fullscreen
+                    player.play(); // FIXED: Ensure video plays when entering fullscreen
                     if (environment === 'desktop') player.fullscreen.enter();
                     else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); }
                 }
@@ -222,7 +222,12 @@
             player.on('exitfullscreen', handleExitFullscreen);
             
             [playPauseBtn, centerPlayPauseBtn].forEach(btn => btn.addEventListener('click', () => player.togglePlay()));
-            player.on('play', syncAllPlayPauseButtons);
+            player.on('play', () => {
+                syncAllPlayPauseButtons();
+                if (player.muted) { // FIXED: Reliable unmute on play
+                    player.muted = false;
+                }
+            });
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
         }
@@ -263,23 +268,13 @@
                 await Promise.all([videoCanPlayPromise, minimumWaitPromise]);
                 clearInterval(countdownInterval);
                 loaderScreen.classList.add("hidden");
-
-                // New, reliable autoplay and unmute logic
-                player.play().then(() => {
-                    player.muted = false; // Unmute after playback is confirmed
-                    console.log("Playback started and player unmuted.");
-                }).catch((e) => {
-                    console.warn("Autoplay was blocked. User must click to play.", e);
-                    // The player will show the play icon, which is the correct fallback.
-                });
-
+                player.play(); // Autoplay starts here, unmute is handled by 'play' event
             } catch (error) {
                 clearInterval(countdownInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
 
-        // Run the main function immediately on script load
         main();
     </script>
 </body>
