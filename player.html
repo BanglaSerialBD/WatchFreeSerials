@@ -129,7 +129,6 @@
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const MINIMUM_WAIT_TIME_MS = 10000;
         
-        // --- SELECTORS ---
         const loaderScreen = document.getElementById("loader-screen");
         const countdownTimer = document.getElementById("countdown-timer");
         const videoTitleContainer = document.getElementById("video-title-container");
@@ -149,6 +148,7 @@
         
         let activityTimer, autoRotateTimer, centerButtonTimer;
         let environment = 'desktop';
+        let hasForceUnmuted = false; // Flag for the unmute check
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -181,10 +181,22 @@
                 playPauseTexts[key].textContent = isPaused ? 'Resume' : 'Pause';
             });
         }
+        
+        function intelligentRotation() {
+            // Check if device is already landscape
+            if (window.matchMedia("(orientation: landscape)").matches) {
+                console.log("Device is already in landscape. Skipping forced rotation.");
+                return;
+            }
+            // If portrait, apply our rotation
+            playerWrapper.classList.add('force-rotate');
+        }
 
         function handleEnterFullscreen() {
             updateFloatingButtonsVisibility(true);
-            if (environment !== 'desktop') autoRotateTimer = setTimeout(() => playerWrapper.classList.add('force-rotate'), 5000);
+            if (environment !== 'desktop') {
+                autoRotateTimer = setTimeout(intelligentRotation, 5000);
+            }
         }
         function handleExitFullscreen() {
             updateFloatingButtonsVisibility(false);
@@ -215,6 +227,17 @@
             player.on('play', syncAllPlayPauseButtons);
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
+            
+            // New: Force unmute check
+            player.on('timeupdate', () => {
+                if (!hasForceUnmuted && player.currentTime > 1.5) {
+                    if (player.muted) {
+                        player.muted = false;
+                        console.log("Player was muted, forcefully unmuted.");
+                    }
+                    hasForceUnmuted = true; // Ensure this only runs once
+                }
+            });
         }
 
         async function fetchVideoData() {
@@ -230,9 +253,7 @@
         }
 
         async function main() {
-            // NEW: Show loader after a 1-second delay
-            loaderScreen.classList.add('visible');
-
+            loaderScreen.classList.add('visible'); // Make loader visible immediately
             environment = getEnvironment();
             setupEventListeners();
             
@@ -256,15 +277,15 @@
                 await Promise.all([videoCanPlayPromise, minimumWaitPromise]);
                 clearInterval(countdownInterval);
                 loaderScreen.classList.remove("visible");
-                player.play().then(() => { player.muted = false; }).catch((e) => {});
+                player.play().catch((e) => {}); // Autoplay starts here
             } catch (error) {
                 clearInterval(countdownInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
 
-        // Start everything after a 1-second delay
-        setTimeout(main, 1000);
+        // Run the main function immediately on script load
+        main();
     </script>
 </body>
 </html>
