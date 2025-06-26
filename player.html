@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchFreeSerial007</title>
+    <title>WatchFreeSerial</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
     <style>
         :root {
@@ -95,6 +95,10 @@
                 <span id="center-play-pause-text"></span>
             </button>
             <div id="floating-buttons-container" class="hidden">
+                <button id="rotate-btn" class="action-btn floating-btn hidden" aria-label="Toggle Rotation">
+                    <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg>
+                    <span>Rotate</span>
+                </button>
                 <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen">
                     <svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg>
                     <span>Exit Fullscreen</span>
@@ -107,10 +111,6 @@
                 <svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg>
                 <svg id="pause-icon" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg>
                 <span id="play-pause-text"></span>
-            </button>
-            <button id="rotate-btn" class="action-btn btn-secondary" aria-label="Toggle Rotation">
-                <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg>
-                <span>Rotate</span>
             </button>
             <button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen">
                 <svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg>
@@ -148,7 +148,6 @@
         
         let activityTimer, autoRotateTimer, centerButtonTimer;
         let environment = 'desktop';
-        let hasForceUnmuted = false;
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -157,6 +156,7 @@
             clearTimeout(activityTimer);
             if (isPlayerInFullscreen()) {
                 floatingButtonsContainer.classList.remove('hidden');
+                rotateBtn.classList.toggle('hidden', environment === 'desktop');
                 const hideDelay = isInitial === true ? 10000 : 4000;
                 activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay);
             } else {
@@ -182,7 +182,10 @@
         }
         
         function intelligentRotation() {
-            if (window.matchMedia("(orientation: landscape)").matches) return;
+            if (window.matchMedia("(orientation: landscape)").matches) {
+                console.log("Device is already in landscape. Skipping forced rotation.");
+                return;
+            }
             playerWrapper.classList.add('force-rotate');
         }
 
@@ -191,7 +194,6 @@
             if (environment !== 'desktop') {
                 autoRotateTimer = setTimeout(intelligentRotation, 5000);
             }
-            player.play(); // Ensure video plays when entering fullscreen
         }
         function handleExitFullscreen() {
             updateFloatingButtonsVisibility(false);
@@ -200,16 +202,15 @@
         
         function setupEventListeners() {
             const playerContainer = player.elements.container;
-            [playerContainer, centerPlayPauseBtn].forEach(el => {
-                el.addEventListener('mousemove', () => { if (isPlayerInFullscreen()) updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
-                el.addEventListener('touchstart', () => { if (isPlayerInFullscreen()) updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
-            });
+            playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
+            playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
 
             fullscreenBtn.addEventListener('click', () => {
                 if (isPlayerInFullscreen()) {
                     if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } 
                     else if (player.fullscreen.active) player.fullscreen.exit();
                 } else {
+                    player.play(); // Ensure video plays when entering fullscreen
                     if (environment === 'desktop') player.fullscreen.enter();
                     else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); }
                 }
@@ -224,13 +225,6 @@
             player.on('play', syncAllPlayPauseButtons);
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
-            
-            player.on('playing', () => {
-                if (!hasForceUnmuted && player.muted) {
-                    player.muted = false;
-                    hasForceUnmuted = true;
-                }
-            });
         }
 
         async function fetchVideoData() {
@@ -245,27 +239,15 @@
             } catch (error) { throw new Error(error.message); }
         }
 
-        function startPlayback() {
-            loaderScreen.classList.add('hidden');
-            const playPromise = player.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.warn("Autoplay was blocked. UI will show 'Resume'.", error);
-                    // UI is already updated by the 'pause' event, so user knows to click.
-                });
-            }
-        }
-
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
-            rotateBtn.classList.toggle('hidden', environment === 'desktop');
             
             const today = new Date();
             const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${urlParams.get("video") || "Default Series"} আজকের Free পর্ব ❤</span><span id="date-box">${formattedDate}</span>`;
             
-            const videoCanPlayPromise = new Promise(resolve => player.on("canplay", resolve, { once: true }));
+            const videoCanPlayPromise = new Promise(resolve => player.on("canplaythrough", resolve, { once: true }));
             const minimumWaitPromise = new Promise(resolve => setTimeout(resolve, MINIMUM_WAIT_TIME_MS));
 
             let countdown = Math.ceil(MINIMUM_WAIT_TIME_MS / 1000);
@@ -280,13 +262,24 @@
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
                 await Promise.all([videoCanPlayPromise, minimumWaitPromise]);
                 clearInterval(countdownInterval);
-                startPlayback();
+                loaderScreen.classList.add("hidden");
+
+                // New, reliable autoplay and unmute logic
+                player.play().then(() => {
+                    player.muted = false; // Unmute after playback is confirmed
+                    console.log("Playback started and player unmuted.");
+                }).catch((e) => {
+                    console.warn("Autoplay was blocked. User must click to play.", e);
+                    // The player will show the play icon, which is the correct fallback.
+                });
+
             } catch (error) {
                 clearInterval(countdownInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
 
+        // Run the main function immediately on script load
         main();
     </script>
 </body>
