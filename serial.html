@@ -322,7 +322,7 @@
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
 
                 // Step 2: Wait for half a second before showing the overlay.
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 100));
                 
                 // Step 3: Show the overlay and start the countdown animation.
                 loaderScreen.classList.remove('hidden');
