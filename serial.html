@@ -80,7 +80,6 @@
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
         
-        /* --- LOADER SCREEN STYLES (MODIFIED) --- */
         #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background-color: var(--bg-color); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
         #loader-screen.hidden { opacity: 0; pointer-events: none; }
         #pie-timer-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
@@ -163,9 +162,8 @@
         
         const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
         
-        let activityTimer, autoRotateTimer, centerButtonTimer;
+        let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
         let environment = 'desktop';
-        let countdownTimerInterval; // To hold the interval ID for cancellation
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -243,6 +241,7 @@
             [playPauseBtn, centerPlayPauseBtn].forEach(btn => btn.addEventListener('click', () => player.togglePlay()));
             player.on('play', () => {
                 syncAllPlayPauseButtons();
+                // This will unmute the video on the first playback action
                 if (player.muted) { 
                     player.muted = false;
                 }
@@ -273,7 +272,6 @@
             
             progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
 
-            // Assign the timer to a variable that can be accessed later to clear it
             countdownTimerInterval = setInterval(() => {
                 count--;
                 countdownNumberEl.textContent = count;
@@ -282,7 +280,7 @@
                 progressRing.style.strokeDashoffset = offset;
                 
                 if (count <= 0) {
-                    clearInterval(countdownTimerInterval); // Stop the timer when it reaches 0
+                    clearInterval(countdownTimerInterval);
                     countdownNumberEl.textContent = "▶";
                     countdownNumberEl.style.animation = 'none';
                     countdownNumberEl.style.transform = 'scale(0.8)';
@@ -290,6 +288,7 @@
             }, 1000);
         }
 
+        // *** THIS IS THE MODIFIED PART ***
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
@@ -309,27 +308,32 @@
             // Start the visual countdown immediately.
             startLoaderCountdown();
             
-            // This function defines what happens when the video is ready to play.
-            const startPlayback = () => {
-                // Ensure this only runs if the loader is still visible.
-                if (!loaderScreen.classList.contains('hidden')) {
-                    clearInterval(countdownTimerInterval); // IMPORTANT: Abandon the countdown.
-                    loaderScreen.classList.add("hidden");   // Hide the loader screen.
-                    player.play();                         // Play the video.
-                }
-            };
-            
-            // Set up a one-time event listener. As soon as the player can play through the video
-            // without stopping for buffering, it will trigger our startPlayback function.
-            player.once('canplaythrough', startPlayback);
+            // This promise will resolve when the video is buffered enough to play.
+            const videoCanPlayPromise = new Promise(resolve => player.once("canplaythrough", resolve));
 
             try {
-                // Fetch the video data and set the player's source.
-                // This is what starts the video loading in the background.
+                // Fetch the video URL and set it as the player's source.
+                // This starts loading the video in the background.
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
+                
+                // Now, we wait until the video has loaded enough data to play smoothly.
+                await videoCanPlayPromise;
+
+                // --- Video is ready to play! ---
+                
+                // Abandon the countdown immediately.
+                clearInterval(countdownTimerInterval);
+
+                // Hide the loader screen.
+                loaderScreen.classList.add("hidden");
+                
+                // Call player.play(). This is much more reliable now because we waited for 'canplaythrough'.
+                player.play();
+
             } catch (error) {
-                clearInterval(countdownTimerInterval); // Also stop the timer on error.
+                // If anything fails, stop the timer and show the error message.
+                clearInterval(countdownTimerInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
