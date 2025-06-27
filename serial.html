@@ -53,7 +53,7 @@
         #custom-controls-wrapper {
             display: flex; justify-content: center; align-items: center; gap: 16px; width: 100%;
             max-width: 1280px; opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards;
-            animation-delay: 0.3s; margin-bottom: 20px;
+            animation-delay: 0.2s; margin-bottom: 20px;
         }
         #center-play-pause-btn {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1);
@@ -132,7 +132,7 @@
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
-        // CHANGED: The minimum wait time is now 500ms (half a second).
+        // The minimum wait time is now 500ms (half a second).
         const MINIMUM_WAIT_TIME_MS = 250; 
         
         const loaderScreen = document.getElementById("loader-screen");
@@ -184,7 +184,6 @@
                 pauseIcons[key].classList.toggle('hidden', isPaused);
                 playPauseTexts[key].textContent = isPaused ? 'Resume' : 'Pause';
             });
-            // Initial sync of text content on load
             if (isPaused) {
                 playPauseTexts.bottom.textContent = 'Play';
                 playPauseTexts.center.textContent = 'Play';
@@ -239,7 +238,6 @@
             player.on('ready', syncAllPlayPauseButtons);
         }
 
-        // MODIFIED: This function now accepts the keyword as an argument.
         async function fetchVideoData(videoKeyword) {
             try {
                 const response = await fetch(SHEET_CSV_URL);
@@ -251,15 +249,12 @@
             } catch (error) { throw new Error(error.message); }
         }
 
-        // MODIFIED: This is the main updated function.
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
             
-            // Get the video keyword from sessionStorage.
             const videoKeyword = sessionStorage.getItem('videoKeyword');
 
-            // If no keyword is found, show an error and stop.
             if (!videoKeyword) {
                 countdownTimer.style.display = 'none';
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।<br>অনুগ্রহ করে আমাদের সাইট থেকে আবার চেষ্টা করুন।</p>`;
@@ -270,19 +265,15 @@
             const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${videoKeyword} আজকের Free পর্ব ❤</span><span id="date-box">${formattedDate}</span>`;
             
-            // This promise waits for the video to be ready to play.
             const videoCanPlayPromise = new Promise(resolve => player.on("canplaythrough", resolve, { once: true }));
-            // This promise enforces the 500ms minimum wait time.
             const minimumWaitPromise = new Promise(resolve => setTimeout(resolve, MINIMUM_WAIT_TIME_MS));
 
-            // Hide the countdown timer since the delay is too short for it to be meaningful.
             countdownTimer.style.display = 'none';
 
             try {
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
                 
-                // Wait for BOTH the video to be ready AND the 500ms to pass.
                 await Promise.all([videoCanPlayPromise, minimumWaitPromise]);
 
                 loaderScreen.classList.add("hidden");
