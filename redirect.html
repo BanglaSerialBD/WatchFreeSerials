@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <style>
+        body { 
+            background-color: #0c0c0c; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #aaaaaa; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <p>Loading your video...</p>
+    <script>
+        try {
+            // Get the encoded keyword from the URL hash
+            const encodedKeyword = window.location.hash.substring(1);
+            if (!encodedKeyword) {
+                throw new Error("No video specified.");
+            }
+            
+            // Decode the keyword from Base64
+            const videoKeyword = atob(encodedKeyword);
+            
+            // Store it in sessionStorage, which is private to this browser tab
+            sessionStorage.setItem('videoKeyword', videoKeyword);
+            
+            // Immediately redirect to your main player page: serial.html
+            window.location.replace('serial.html');
+            
+        } catch (e) {
+            document.body.innerHTML = `<p style="color:red;">Error: Could not load video. Please go back and try again.</p>`;
+        }
+    </script>
+</body>
+</html>
