@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial</title>
+    <title>WatchBanglaSerial0009</title>
     
     <link rel="icon" type="image/png" href="letter-b.png">
     
@@ -73,15 +73,31 @@
             padding: 0 16px; height: 44px; background-color: rgba(20,20,20,0.5);
             backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);
         }
-        .hidden { display: none !important; }
+        
         @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; color: var(--text-primary); background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: 0.4s; }
         #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 22px; margin: 0 0 10px 0; font-weight: 600; }
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
         
-        #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background-color: var(--bg-color); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
-        #loader-screen.hidden { opacity: 0; pointer-events: none; }
+        /* --- LOADER OVERLAY STYLES (MODIFIED) --- */
+        #loader-screen { 
+            position: fixed; top: 0; left: 0; z-index: 100; 
+            width: 100%; height: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            gap: 24px; 
+            background-color: rgba(12, 12, 12, 0.85); /* Semi-transparent background */
+            backdrop-filter: blur(5px); /* Frosted glass effect */
+            transition: opacity 0.5s ease-out; /* Smooth fade transition */
+            opacity: 1; pointer-events: all;
+        }
+        /* This specific rule ensures the fade works correctly */
+        #loader-screen.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .hidden { display: none !important; }
+
         #pie-timer-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
         #pie-timer-svg { transform: rotate(-90deg); }
         .progress-ring-circle { transition: stroke-dashoffset 1s linear; }
@@ -91,7 +107,8 @@
     </style>
 </head>
 <body>
-    <div id="loader-screen">
+    <!-- The countdown overlay starts hidden -->
+    <div id="loader-screen" class="hidden">
         <div id="pie-timer-container">
             <svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150">
                 <circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/>
@@ -99,9 +116,10 @@
             </svg>
             <span id="countdown-number">10</span>
         </div>
-        <p id="loading-text">আপনার ভিডিও লোড করা হচ্ছে...</p>
+        <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
 
+    <!-- The player and page are visible from the start -->
     <div class="page-container">
         <div id="player-wrapper">
             <video id="player" playsinline controls muted></video>
@@ -160,6 +178,7 @@
         const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
         const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
         
+        // Player is started muted, so background loading is allowed by browsers.
         const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
         
         let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
@@ -168,7 +187,8 @@
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
 
-        function updateFloatingButtonsVisibility(isInitial) {
+        // --- ALL OF YOUR PLAYER FEATURE FUNCTIONS ARE UNCHANGED ---
+        function updateFloatingButtonsVisibility(isInitial) { /* Your existing code */
             clearTimeout(activityTimer);
             if (isPlayerInFullscreen()) {
                 floatingButtonsContainer.classList.remove('hidden');
@@ -181,14 +201,12 @@
                 clearTimeout(autoRotateTimer);
             }
         }
-        
-        function updateCenterButtonVisibility() {
+        function updateCenterButtonVisibility() { /* Your existing code */
             clearTimeout(centerButtonTimer);
             centerPlayPauseBtn.classList.add('visible');
             centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 2500);
         }
-
-        function syncAllPlayPauseButtons() {
+        function syncAllPlayPauseButtons() { /* Your existing code */
             const isPaused = player.paused;
             ['bottom', 'center'].forEach(key => {
                 playIcons[key].classList.toggle('hidden', !isPaused);
@@ -200,24 +218,21 @@
                 playPauseTexts.center.textContent = 'Play';
             }
         }
-        
-        function intelligentRotation() {
+        function intelligentRotation() { /* Your existing code */
             if (window.matchMedia("(orientation: landscape)").matches) { return; }
             playerWrapper.classList.add('force-rotate');
         }
-
-        function handleEnterFullscreen() {
+        function handleEnterFullscreen() { /* Your existing code */
             updateFloatingButtonsVisibility(true);
             if (environment !== 'desktop') {
                 autoRotateTimer = setTimeout(intelligentRotation, 2000);
             }
         }
-        function handleExitFullscreen() {
+        function handleExitFullscreen() { /* Your existing code */
             updateFloatingButtonsVisibility(false);
             if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
         }
-        
-        function setupEventListeners() {
+        function setupEventListeners() { /* Your existing code */
             const playerContainer = player.elements.container;
             playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
             playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
@@ -241,16 +256,14 @@
             [playPauseBtn, centerPlayPauseBtn].forEach(btn => btn.addEventListener('click', () => player.togglePlay()));
             player.on('play', () => {
                 syncAllPlayPauseButtons();
-                // This will unmute the video on the first playback action
-                if (player.muted) { 
-                    player.muted = false;
-                }
+                if (player.muted) player.muted = false;
             });
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
         }
 
-        async function fetchVideoData(videoKeyword) {
+        // --- THESE SUPPORTING FUNCTIONS ARE ALSO UNCHANGED ---
+        async function fetchVideoData(videoKeyword) { /* Your existing code */
             try {
                 const response = await fetch(SHEET_CSV_URL);
                 if (!response.ok) throw new Error("Network error fetching video list");
@@ -260,25 +273,20 @@
                 throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
             } catch (error) { throw new Error(error.message); }
         }
-
-        function startLoaderCountdown() {
+        function startLoaderCountdown() { /* Your existing code */
             const radius = progressRing.r.baseVal.value;
             const circumference = 2 * Math.PI * radius;
             progressRing.style.strokeDasharray = `${circumference} ${circumference}`;
             progressRing.style.strokeDashoffset = circumference;
-
             let count = COUNTDOWN_SECONDS;
             countdownNumberEl.textContent = count;
-            
             progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
-
             countdownTimerInterval = setInterval(() => {
                 count--;
                 countdownNumberEl.textContent = count;
                 const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
                 const offset = circumference - progress * circumference;
                 progressRing.style.strokeDashoffset = offset;
-                
                 if (count <= 0) {
                     clearInterval(countdownTimerInterval);
                     countdownNumberEl.textContent = "▶";
@@ -288,7 +296,7 @@
             }, 1000);
         }
 
-        // *** THIS IS THE MODIFIED PART ***
+        // *** THIS IS THE NEW, REBUILT LOGIC ***
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
@@ -296,6 +304,8 @@
             const videoKeyword = sessionStorage.getItem('videoKeyword');
 
             if (!videoKeyword) {
+                // Show the overlay to display the error message.
+                loaderScreen.classList.remove('hidden');
                 document.getElementById('pie-timer-container').style.display = 'none';
                 document.getElementById('loading-text').innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।<br>অনুগ্রহ করে আমাদের সাইট থেকে আবার চেষ্টা করুন।</p>`;
                 return;
@@ -305,34 +315,31 @@
             const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${videoKeyword} আজকের Free পর্ব ❤</span><span id="date-box">${formattedDate}</span>`;
             
-            // Start the visual countdown immediately.
-            startLoaderCountdown();
-            
-            // This promise will resolve when the video is buffered enough to play.
-            const videoCanPlayPromise = new Promise(resolve => player.once("canplaythrough", resolve));
-
             try {
-                // Fetch the video URL and set it as the player's source.
-                // This starts loading the video in the background.
+                // Step 1: Immediately fetch video data and set the player's source.
+                // This starts the video loading in the background while the player is visible but paused.
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
-                
-                // Now, we wait until the video has loaded enough data to play smoothly.
-                await videoCanPlayPromise;
 
-                // --- Video is ready to play! ---
+                // Step 2: Wait for half a second before showing the overlay.
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
-                // Abandon the countdown immediately.
-                clearInterval(countdownTimerInterval);
+                // Step 3: Show the overlay and start the countdown animation.
+                loaderScreen.classList.remove('hidden');
+                startLoaderCountdown();
 
-                // Hide the loader screen.
-                loaderScreen.classList.add("hidden");
+                // Step 4: Wait for the MANDATORY 10-second countdown to finish.
+                await new Promise(resolve => setTimeout(resolve, COUNTDOWN_SECONDS * 1000));
                 
-                // Call player.play(). This is much more reliable now because we waited for 'canplaythrough'.
-                player.play();
+                // Step 5: The countdown is over. Hide the overlay...
+                loaderScreen.classList.add('hidden');
+                
+                // ...and then automatically play the video.
+                player.play(); // This will also unmute it because of your existing 'play' event listener.
 
             } catch (error) {
-                // If anything fails, stop the timer and show the error message.
+                // If anything fails, make sure the overlay is visible to show the error.
+                loaderScreen.classList.remove('hidden');
                 clearInterval(countdownTimerInterval);
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
