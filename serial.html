@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial011</title>
+    <title>WatchBanglaSerial0012</title>
     
     <link rel="icon" type="image/png" href="letter-b.png">
     
@@ -170,23 +170,30 @@
             rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
             player.on('enterfullscreen', handleEnterFullscreen);
             player.on('exitfullscreen', handleExitFullscreen);
-            [playPauseBtn, centerPlayPauseBtn].forEach(btn => btn.addEventListener('click', () => player.togglePlay()));
             
-            // ▼▼▼ MODIFIED PLAY EVENT LISTENER ▼▼▼
-            // This now handles unmuting the video automatically the first time it plays.
+            // The bottom play/pause button has a simple action
+            playPauseBtn.addEventListener('click', () => player.togglePlay());
+            
+            // ▼▼▼ MODIFIED CENTER PLAY/PAUSE BUTTON LISTENER ▼▼▼
+            centerPlayPauseBtn.addEventListener('click', () => {
+                player.togglePlay();
+                // When clicked, hide the button after 1 second so it doesn't get stuck.
+                setTimeout(() => {
+                    centerPlayPauseBtn.classList.remove('visible');
+                }, 1000);
+            });
+            // ▲▲▲ MODIFIED CENTER PLAY/PAUSE BUTTON LISTENER ▲▲▲
+
             player.on('play', () => {
                 syncAllPlayPauseButtons();
                 if (player.muted) { 
                     player.muted = false;
                 }
             });
-            // ▲▲▲ MODIFIED PLAY EVENT LISTENER ▲▲▲
-
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
         }
 
-        // *** THE FINAL, CORRECTED LOGIC ***
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
@@ -204,7 +211,8 @@
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
                 
-                await new Promise(resolve => setTimeout(resolve, 500));
+                // ▼▼▼ DELAY REDUCED TO BE NEARLY INSTANTANEOUS ▼▼▼
+                await new Promise(resolve => setTimeout(resolve, 10));
                 
                 loaderScreen.classList.remove('hidden');
                 startLoaderCountdown();
@@ -213,15 +221,12 @@
                 
                 loaderScreen.classList.add('hidden');
                 
-                // This is the modern, promise-based way to request autoplay.
                 const playPromise = player.play();
 
                 if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        // Autoplay started successfully. Video is playing. Nothing more to do.
-                    }).catch(error => {
-                        // Autoplay was blocked by the browser.
-                        // Show the user's own play button as a fallback "Resume" button.
+                    playPromise.catch(error => {
+                        // Autoplay was blocked. Show the resume button.
+                        // It will now auto-hide on click thanks to the new event listener.
                         centerPlayPauseBtn.classList.add('visible');
                     });
                 }
