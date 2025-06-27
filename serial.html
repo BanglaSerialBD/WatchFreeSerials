@@ -165,6 +165,7 @@
         
         let activityTimer, autoRotateTimer, centerButtonTimer;
         let environment = 'desktop';
+        let countdownTimerInterval; // To hold the interval ID for cancellation
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -270,10 +271,10 @@
             let count = COUNTDOWN_SECONDS;
             countdownNumberEl.textContent = count;
             
-            // Set initial progress to 0
             progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
 
-            const timer = setInterval(() => {
+            // Assign the timer to a variable that can be accessed later to clear it
+            countdownTimerInterval = setInterval(() => {
                 count--;
                 countdownNumberEl.textContent = count;
                 const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
@@ -281,9 +282,9 @@
                 progressRing.style.strokeDashoffset = offset;
                 
                 if (count <= 0) {
-                    clearInterval(timer);
+                    clearInterval(countdownTimerInterval); // Stop the timer when it reaches 0
                     countdownNumberEl.textContent = "▶";
-                    countdownNumberEl.style.animation = 'none'; // Stop pop animation
+                    countdownNumberEl.style.animation = 'none';
                     countdownNumberEl.style.transform = 'scale(0.8)';
                 }
             }, 1000);
@@ -305,20 +306,30 @@
             const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${videoKeyword} আজকের Free পর্ব ❤</span><span id="date-box">${formattedDate}</span>`;
             
+            // Start the visual countdown immediately.
             startLoaderCountdown();
             
-            const countdownPromise = new Promise(resolve => setTimeout(resolve, COUNTDOWN_SECONDS * 1000));
-            const videoCanPlayPromise = new Promise(resolve => player.on("canplaythrough", resolve, { once: true }));
+            // This function defines what happens when the video is ready to play.
+            const startPlayback = () => {
+                // Ensure this only runs if the loader is still visible.
+                if (!loaderScreen.classList.contains('hidden')) {
+                    clearInterval(countdownTimerInterval); // IMPORTANT: Abandon the countdown.
+                    loaderScreen.classList.add("hidden");   // Hide the loader screen.
+                    player.play();                         // Play the video.
+                }
+            };
+            
+            // Set up a one-time event listener. As soon as the player can play through the video
+            // without stopping for buffering, it will trigger our startPlayback function.
+            player.once('canplaythrough', startPlayback);
 
             try {
+                // Fetch the video data and set the player's source.
+                // This is what starts the video loading in the background.
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
-                
-                await Promise.all([videoCanPlayPromise, countdownPromise]);
-
-                loaderScreen.classList.add("hidden");
-                player.play();
             } catch (error) {
+                clearInterval(countdownTimerInterval); // Also stop the timer on error.
                 loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:20px;">ত্রুটি: ${error.message}</p>`;
             }
         }
