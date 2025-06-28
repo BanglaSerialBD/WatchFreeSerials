@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial</title>
+    <title>WatchBanglaSerial020</title>
 
     <!-- PERFORMANCE: Preload critical assets and preconnect to external domains -->
     <link rel="preconnect" href="https://cdn.plyr.io">
@@ -38,23 +38,29 @@
             position: relative; width: 100%; aspect-ratio: 16 / 9;
             background-color: #000; --plyr-color-main: var(--primary-accent);
             overflow: hidden; transition: all 0.3s ease-in-out; flex-shrink: 0;
+            display: flex; /* Added for centering */
+            align-items: center; /* Added for centering */
+            justify-content: center; /* Added for centering */
         }
         #player-wrapper.simulated-fullscreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             max-width: none; border-radius: 0; z-index: 50; margin-bottom: 0;
         }
 
-        /* ⭐ --- THIS IS THE INTELLIGENT FIT FIX --- ⭐ */
+        /* ⭐ FIX PART 1: Reverted to the original rule to make the container BIG again. */
         #player-wrapper.simulated-fullscreen.force-rotate {
             top: 50%;
             left: 50%;
+            width: 100vh;
+            height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
-            /* Let the browser calculate the best size based on aspect ratio */
-            width: auto;
-            height: auto;
-            /* Constrain the size to fit within the rotated screen boundaries */
-            max-width: 100vh;
-            max-height: 100vw;
+        }
+        
+        /* ⭐ FIX PART 2: The new, critical rule to prevent video stretching and blur. */
+        #player {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* This is the magic property. */
         }
         
         .action-btn {
@@ -124,10 +130,9 @@
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "s6gceeg8bh");
     </script>
-
 </head>
 <body>
-    <!-- The rest of your HTML body remains exactly the same -->
+    <!-- The HTML Body is unchanged -->
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container">
             <svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg>
@@ -135,7 +140,6 @@
         </div>
         <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
-
     <div id="app-container">
         <div id="player-wrapper">
             <video id="player" playsinline controls muted></video>
@@ -149,7 +153,6 @@
                 <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg><span>Exit Fullscreen</span></button>
             </div>
         </div>
-        
         <div class="content-container">
             <div id="custom-controls-wrapper">
                 <div id="main-controls-row">
@@ -161,15 +164,13 @@
                     <span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span>
                 </a>
             </div>
-            
             <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
         </div>
     </div>
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
-        // Your JavaScript is perfect and requires NO changes for this fix.
-        // It remains exactly the same.
+        // The JavaScript is unchanged and remains fully functional.
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
         const loaderScreen = document.getElementById("loader-screen");
@@ -202,7 +203,7 @@
         async function fetchVideoData(videoKeyword) {
             const cacheKey = `video_data_csv`;
             const timestampKey = `video_data_timestamp`;
-            const CACHE_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+            const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
             try {
                 const cachedData = sessionStorage.getItem(cacheKey);
                 const cachedTimestamp = sessionStorage.getItem(timestampKey);
