@@ -15,30 +15,42 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- CHANGE #1: Fix "Long-Press and Move" issue --- */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--bg-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            overflow: hidden; /* Prevents scrollbars */
-            touch-action: none; /* Prevents panning/dragging the page */
-            overscroll-behavior: none; /* Prevents "bounce" effect on mobile */
-        }
-        
-        /* New container for all content below the player */
-        .content-container {
-            display: flex; flex-direction: column; align-items: center;
-            width: 100%; height: 100vh; padding: 24px; box-sizing: border-box; overflow-y: auto;
+            overflow: hidden; 
         }
 
-        /* --- CHANGE #2: Make Player Edge-to-Edge --- */
+        /* --- THE FIX PART 1: New container for the entire app layout --- */
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        /* --- THE FIX PART 2: Modified content container to work within the new layout --- */
+        .content-container {
+            flex: 1; /* Allows this container to fill the remaining vertical space */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 16px 24px; /* Adjusted padding */
+            box-sizing: border-box;
+            overflow-y: auto; /* Allow vertical scroll ONLY if content overflows */
+            touch-action: pan-y; /* Allow vertical finger panning, but disable horizontal */
+            overscroll-behavior-y: contain; /* Prevent "bounce" on this element */
+        }
+
         #player-wrapper {
-            position: relative; width: 100%; /* Full width */
+            position: relative; width: 100%;
             aspect-ratio: 16 / 9;
             background-color: #000; --plyr-color-main: var(--primary-accent);
             overflow: hidden;
             transition: all 0.3s ease-in-out;
-            /* REMOVED: border-radius, max-width, box-shadow, margin-bottom */
+            flex-shrink: 0; /* Prevents the player from shrinking */
         }
         #player-wrapper.simulated-fullscreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -62,12 +74,11 @@
         .btn-secondary { background-color: var(--bg-secondary-color); border: 1px solid var(--border-color); }
         .btn-secondary:hover { background-color: #2a2a2a; }
         
-        /* --- CHANGE #3: Modify Controls Wrapper for new button --- */
         #custom-controls-wrapper {
             display: flex;
-            flex-direction: column; /* Stack controls vertically */
+            flex-direction: column;
             align-items: center;
-            gap: 16px; /* Space between rows */
+            gap: 16px;
             width: 100%; max-width: 1280px;
             opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards;
             animation-delay: 0.2s; margin-bottom: 20px;
@@ -80,7 +91,7 @@
         }
         #download-app-btn {
             width: 100%;
-            max-width: 450px; /* Limit width on larger screens */
+            max-width: 450px;
             background: var(--primary-accent);
             text-decoration: none;
             color: white;
@@ -145,38 +156,42 @@
         <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
 
-    <!-- --- CHANGE #2 & #3: Restructured HTML Layout --- -->
-    <div id="player-wrapper">
-        <video id="player" playsinline controls muted></video>
-        <button id="center-play-pause-btn" class="action-btn" aria-label="Play/Pause">
-            <svg id="center-play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg>
-            <svg id="center-pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg>
-            <span id="center-play-pause-text"></span>
-        </button>
-        <div id="floating-buttons-container" class="hidden">
-            <button id="rotate-btn" class="action-btn floating-btn hidden" aria-label="Toggle Rotation"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg><span>Rotate</span></button>
-            <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg><span>Exit Fullscreen</span></button>
-        </div>
-    </div>
-    
-    <div class="content-container">
-        <div id="custom-controls-wrapper">
-            <div id="main-controls-row">
-                <button id="play-pause-btn" class="action-btn btn-secondary" aria-label="Play/Pause"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="play-pause-text"></span></button>
-                <button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen"><svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg><span>Fullscreen</span></button>
+    <!-- --- THE FIX PART 3: New wrapper div for the entire page layout --- -->
+    <div id="app-container">
+        <div id="player-wrapper">
+            <video id="player" playsinline controls muted></video>
+            <button id="center-play-pause-btn" class="action-btn" aria-label="Play/Pause">
+                <svg id="center-play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg>
+                <svg id="center-pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg>
+                <span id="center-play-pause-text"></span>
+            </button>
+            <div id="floating-buttons-container" class="hidden">
+                <button id="rotate-btn" class="action-btn floating-btn hidden" aria-label="Toggle Rotation"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg><span>Rotate</span></button>
+                <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg><span>Exit Fullscreen</span></button>
             </div>
-            <!-- New Download Button (initially hidden) -->
-            <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="rgba(255,255,255,1)"/></svg>
-                <span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span>
-            </a>
         </div>
         
-        <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
-    </div>
+        <div class="content-container">
+            <div id="custom-controls-wrapper">
+                <div id="main-controls-row">
+                    <button id="play-pause-btn" class="action-btn btn-secondary" aria-label="Play/Pause"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="play-pause-text"></span></button>
+                    <button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen"><svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg><span>Fullscreen</span></button>
+                </div>
+                <!-- New Download Button (initially hidden) -->
+                <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="rgba(255,255,255,1)"/></svg>
+                    <span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span>
+                </a>
+            </div>
+            
+            <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
+        </div>
+    </div> <!-- This is the closing div for #app-container -->
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
+        // All your JavaScript code is UNCHANGED and remains here.
+        // I am omitting it for brevity, but you should keep it exactly as it was.
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
         
@@ -240,13 +255,11 @@
             player.on('ready', syncAllPlayPauseButtons);
         }
 
-        // --- CHANGE #3: New function to handle the smart download button ---
         function setupSmartDownloadButton() {
             const appIdentifier = 'BanglaSerial/1.0';
             const currentUserAgent = navigator.userAgent;
             const downloadButton = document.getElementById('download-app-btn');
 
-            // If the user is NOT in the app, show the button
             if (!currentUserAgent.includes(appIdentifier)) {
                 downloadButton.classList.remove('hidden');
             }
@@ -255,7 +268,7 @@
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
-            setupSmartDownloadButton(); // Call the new function
+            setupSmartDownloadButton(); 
             
             const videoKeyword = sessionStorage.getItem('videoKeyword');
             if (!videoKeyword) {
