@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>WatchBanglaSerial</title>
+
+    <!-- ⭐ PERFORMANCE: Preload critical assets and preconnect to external domains -->
+    <link rel="preconnect" href="https://cdn.plyr.io">
+    <link rel="preconnect" href="https://docs.google.com">
+    <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
+    <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.js" as="script">
     
     <link rel="icon" type="image/png" href="letter-b.png">
     
@@ -14,43 +20,24 @@
             --text-secondary: #aaaaaa; --bg-color: #0c0c0c; --bg-secondary-color: #1a1a1a;
             --border-color: rgba(255, 255, 255, 0.1);
         }
-
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--bg-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             overflow: hidden; 
         }
-
-        /* --- THE FIX PART 1: New container for the entire app layout --- */
         #app-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100vh;
+            display: flex; flex-direction: column; width: 100%; height: 100vh;
         }
-        
-        /* --- THE FIX PART 2: Modified content container to work within the new layout --- */
         .content-container {
-            flex: 1; /* Allows this container to fill the remaining vertical space */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            padding: 16px 24px; /* Adjusted padding */
-            box-sizing: border-box;
-            overflow-y: auto; /* Allow vertical scroll ONLY if content overflows */
-            touch-action: pan-y; /* Allow vertical finger panning, but disable horizontal */
-            overscroll-behavior-y: contain; /* Prevent "bounce" on this element */
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            width: 100%; padding: 16px 24px; box-sizing: border-box; overflow-y: auto;
+            touch-action: pan-y; overscroll-behavior-y: contain;
         }
-
         #player-wrapper {
-            position: relative; width: 100%;
-            aspect-ratio: 16 / 9;
+            position: relative; width: 100%; aspect-ratio: 16 / 9;
             background-color: #000; --plyr-color-main: var(--primary-accent);
-            overflow: hidden;
-            transition: all 0.3s ease-in-out;
-            flex-shrink: 0; /* Prevents the player from shrinking */
+            overflow: hidden; transition: all 0.3s ease-in-out; flex-shrink: 0;
         }
         #player-wrapper.simulated-fullscreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -60,7 +47,6 @@
             top: 50%; left: 50%; width: 100vh; height: 100vw;
             transform: translate(-50%, -50%) rotate(90deg);
         }
-        
         .action-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             height: 50px; padding: 0 24px; font-size: 16px; font-weight: 600;
@@ -68,39 +54,25 @@
             transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .action-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .action-btn svg { width: 22px; height: 22px; fill: var(--text-primary); }
+        .action-btn svg { width: 22px; height: 22px; fill: currentColor; }
         .btn-primary { background-color: var(--primary-accent); }
         .btn-primary:hover { background-color: var(--primary-accent-darker); }
         .btn-secondary { background-color: var(--bg-secondary-color); border: 1px solid var(--border-color); }
         .btn-secondary:hover { background-color: #2a2a2a; }
-        
         #custom-controls-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            width: 100%; max-width: 1280px;
-            opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards;
-            animation-delay: 0.2s; margin-bottom: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 16px; width: 100%; max-width: 1280px; opacity: 0;
+            animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: 0.2s;
+            margin-bottom: 20px;
         }
         #main-controls-row {
-             display: flex;
-             justify-content: center;
-             gap: 16px;
-             width: 100%;
+             display: flex; justify-content: center; gap: 16px; width: 100%;
         }
         #download-app-btn {
-            width: 100%;
-            max-width: 450px;
-            background: var(--primary-accent);
-            text-decoration: none;
-            color: white;
-            text-align: center;
+            width: 100%; max-width: 450px; background: var(--primary-accent);
+            text-decoration: none; color: white; text-align: center;
         }
-        #download-app-btn:hover {
-            background: var(--primary-accent-darker);
-        }
-
+        #download-app-btn:hover { background: var(--primary-accent-darker); }
         #center-play-pause-btn {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1);
             z-index: 52; padding: 0 30px; height: 60px; border-radius: 12px;
@@ -119,17 +91,14 @@
             padding: 0 16px; height: 44px; background-color: rgba(20,20,20,0.5);
             backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);
         }
-        
         @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; color: var(--text-primary); background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: 0.4s; }
         #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 22px; margin: 0 0 10px 0; font-weight: 600; }
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
-        
         #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background-color: rgba(12, 12, 12, 0.85); backdrop-filter: blur(5px); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
         #loader-screen.hidden { opacity: 0; pointer-events: none; }
         .hidden { display: none !important; }
-
         #pie-timer-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
         #pie-timer-svg { transform: rotate(-90deg); }
         .progress-ring-circle { transition: stroke-dashoffset 1s linear; }
@@ -156,7 +125,6 @@
         <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
 
-    <!-- --- THE FIX PART 3: New wrapper div for the entire page layout --- -->
     <div id="app-container">
         <div id="player-wrapper">
             <video id="player" playsinline controls muted></video>
@@ -177,24 +145,21 @@
                     <button id="play-pause-btn" class="action-btn btn-secondary" aria-label="Play/Pause"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="play-pause-text"></span></button>
                     <button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen"><svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg><span>Fullscreen</span></button>
                 </div>
-                <!-- New Download Button (initially hidden) -->
                 <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="rgba(255,255,255,1)"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="currentColor"/></svg>
                     <span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span>
                 </a>
             </div>
             
             <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
         </div>
-    </div> <!-- This is the closing div for #app-container -->
+    </div>
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
-        // All your JavaScript code is UNCHANGED and remains here.
-        // I am omitting it for brevity, but you should keep it exactly as it was.
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
-        
+
         const loaderScreen = document.getElementById("loader-screen");
         const countdownNumberEl = document.getElementById("countdown-number");
         const progressRing = document.getElementById("progress-ring-circle");
@@ -209,11 +174,13 @@
         const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") };
         const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
         const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
-        
+        const downloadButton = document.getElementById('download-app-btn');
+
         const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
-        
+
         let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
         let environment = 'desktop';
+        let isFirstPlayAttempt = true;
 
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -223,34 +190,99 @@
         function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-        async function fetchVideoData(videoKeyword) { try { const response = await fetch(SHEET_CSV_URL); if (!response.ok) throw new Error("Network error fetching video list"); const csvText = await response.text(); const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase()); if (videoRow && videoRow[1]) return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`); } catch (error) { throw new Error(error.message); } }
-        function startLoaderCountdown() { const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference; countdownTimerInterval = setInterval(() => { count--; countdownNumberEl.textContent = count; const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS; const offset = circumference - progress * circumference; progressRing.style.strokeDashoffset = offset; if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; } }, 1000); }
+
+        // ⭐ OPTIMIZED FUNCTION WITH TIMESTAMP CACHING ⭐
+        async function fetchVideoData(videoKeyword) {
+            const cacheKey = `video_data_csv`;
+            const timestampKey = `video_data_timestamp`;
+            const CACHE_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+
+            try {
+                const cachedData = sessionStorage.getItem(cacheKey);
+                const cachedTimestamp = sessionStorage.getItem(timestampKey);
+                let csvText;
+
+                if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) {
+                    csvText = cachedData;
+                } else {
+                    const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
+                    if (!response.ok) throw new Error("Network error fetching video list");
+                    csvText = await response.text();
+                    sessionStorage.setItem(cacheKey, csvText);
+                    sessionStorage.setItem(timestampKey, String(Date.now()));
+                }
+
+                const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase());
+                
+                if (videoRow && videoRow[1]) {
+                    return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" };
+                }
+                throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
+
+            } catch (error) {
+                sessionStorage.removeItem(cacheKey);
+                sessionStorage.removeItem(timestampKey);
+                throw new Error(error.message);
+            }
+        }
+
+        function startLoaderCountdown() {
+            return new Promise(resolve => {
+                const radius = progressRing.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                progressRing.style.strokeDasharray = `${circumference} ${circumference}`;
+                progressRing.style.strokeDashoffset = circumference;
+                let count = COUNTDOWN_SECONDS;
+                countdownNumberEl.textContent = count;
+                progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
+                countdownTimerInterval = setInterval(() => {
+                    count--;
+                    countdownNumberEl.textContent = count;
+                    const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
+                    const offset = circumference - progress * circumference;
+                    progressRing.style.strokeDashoffset = offset;
+                    if (count <= 0) {
+                        clearInterval(countdownTimerInterval);
+                        countdownNumberEl.textContent = "▶";
+                        countdownNumberEl.style.animation = 'none';
+                        countdownNumberEl.style.transform = 'scale(0.8)';
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        async function handleFirstPlay() {
+            if (!isFirstPlayAttempt) {
+                player.togglePlay();
+                return;
+            }
+            isFirstPlayAttempt = false;
+            if (player.muted) { player.muted = false; }
+            loaderScreen.classList.remove('hidden');
+            const countdownPromise = startLoaderCountdown();
+            const videoReadyPromise = new Promise(resolve => player.once('canplay', resolve));
+            await Promise.race([countdownPromise, videoReadyPromise]);
+            clearInterval(countdownTimerInterval);
+            loaderScreen.classList.add('hidden');
+            player.play();
+        }
 
         function setupEventListeners() {
             const playerContainer = player.elements.container;
             playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
             playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
-            fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); }  else if (player.fullscreen.active) player.fullscreen.exit(); } else { player.play(); if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
+            fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handleFirstPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
             exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
             rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
             player.on('enterfullscreen', handleEnterFullscreen);
             player.on('exitfullscreen', handleExitFullscreen);
-            
-            playPauseBtn.addEventListener('click', () => player.togglePlay());
-            
+            playPauseBtn.addEventListener('click', handleFirstPlay);
             centerPlayPauseBtn.addEventListener('click', () => {
-                player.togglePlay();
-                setTimeout(() => {
-                    centerPlayPauseBtn.classList.remove('visible');
-                }, 1000);
+                handleFirstPlay();
+                setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000);
             });
-
-            player.on('play', () => {
-                syncAllPlayPauseButtons();
-                if (player.muted) { 
-                    player.muted = false;
-                }
-            });
+            player.on('play', syncAllPlayPauseButtons);
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
         }
@@ -258,8 +290,6 @@
         function setupSmartDownloadButton() {
             const appIdentifier = 'BanglaSerial/1.0';
             const currentUserAgent = navigator.userAgent;
-            const downloadButton = document.getElementById('download-app-btn');
-
             if (!currentUserAgent.includes(appIdentifier)) {
                 downloadButton.classList.remove('hidden');
             }
@@ -268,40 +298,21 @@
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
-            setupSmartDownloadButton(); 
-            
+            setupSmartDownloadButton();
+            loaderScreen.classList.add('hidden');
             const videoKeyword = sessionStorage.getItem('videoKeyword');
             if (!videoKeyword) {
-                loaderScreen.classList.remove('hidden'); document.getElementById('pie-timer-container').style.display = 'none'; document.getElementById('loading-text').innerHTML = `<p style="color:#FF5555;font-size:18px;">Error: No video selected.</p>`;
+                document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: No video selected.</p>`;
                 return;
             }
-            
-            const today = new Date(); const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${videoKeyword} আজকের পর্ব 📺</span><span id="date-box">${formattedDate}</span>`;
-            
             try {
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
-                await new Promise(resolve => setTimeout(resolve, 10));
-                
-                loaderScreen.classList.remove('hidden');
-                startLoaderCountdown();
-                
-                await new Promise(resolve => setTimeout(resolve, COUNTDOWN_SECONDS * 1000));
-                
-                loaderScreen.classList.add('hidden');
-                
-                const playPromise = player.play();
-
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        centerPlayPauseBtn.classList.add('visible');
-                    });
-                }
             } catch (error) {
-                loaderScreen.classList.remove('hidden');
-                clearInterval(countdownTimerInterval);
-                loaderScreen.innerHTML = `<p style="color:#FF5555;font-size:18px;">Error: ${error.message}</p>`;
+                document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: ${error.message}</p>`;
             }
         }
 
