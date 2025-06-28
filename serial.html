@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>WatchBanglaSerial</title>
 
-    <!-- ⭐ PERFORMANCE: Preload critical assets and preconnect to external domains -->
+    <!-- PERFORMANCE: Preload critical assets and preconnect to external domains -->
     <link rel="preconnect" href="https://cdn.plyr.io">
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
@@ -43,10 +43,20 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             max-width: none; border-radius: 0; z-index: 50; margin-bottom: 0;
         }
+
+        /* ⭐ --- THIS IS THE INTELLIGENT FIT FIX --- ⭐ */
         #player-wrapper.simulated-fullscreen.force-rotate {
-            top: 50%; left: 50%; width: 100vh; height: 100vw;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%) rotate(90deg);
+            /* Let the browser calculate the best size based on aspect ratio */
+            width: auto;
+            height: auto;
+            /* Constrain the size to fit within the rotated screen boundaries */
+            max-width: 100vh;
+            max-height: 100vw;
         }
+        
         .action-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             height: 50px; padding: 0 24px; font-size: 16px; font-weight: 600;
@@ -117,6 +127,7 @@
 
 </head>
 <body>
+    <!-- The rest of your HTML body remains exactly the same -->
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container">
             <svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg>
@@ -157,9 +168,10 @@
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
+        // Your JavaScript is perfect and requires NO changes for this fix.
+        // It remains exactly the same.
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
-
         const loaderScreen = document.getElementById("loader-screen");
         const countdownNumberEl = document.getElementById("countdown-number");
         const progressRing = document.getElementById("progress-ring-circle");
@@ -175,13 +187,10 @@
         const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
         const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
         const downloadButton = document.getElementById('download-app-btn');
-
         const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
-
         let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
         let environment = 'desktop';
         let isFirstPlayAttempt = true;
-
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
         function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 10000 : 4000; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } }
@@ -190,18 +199,14 @@
         function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-
-        // ⭐ OPTIMIZED FUNCTION WITH TIMESTAMP CACHING ⭐
         async function fetchVideoData(videoKeyword) {
             const cacheKey = `video_data_csv`;
             const timestampKey = `video_data_timestamp`;
             const CACHE_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-
             try {
                 const cachedData = sessionStorage.getItem(cacheKey);
                 const cachedTimestamp = sessionStorage.getItem(timestampKey);
                 let csvText;
-
                 if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) {
                     csvText = cachedData;
                 } else {
@@ -211,21 +216,17 @@
                     sessionStorage.setItem(cacheKey, csvText);
                     sessionStorage.setItem(timestampKey, String(Date.now()));
                 }
-
                 const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase());
-                
                 if (videoRow && videoRow[1]) {
                     return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" };
                 }
                 throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
-
             } catch (error) {
                 sessionStorage.removeItem(cacheKey);
                 sessionStorage.removeItem(timestampKey);
                 throw new Error(error.message);
             }
         }
-
         function startLoaderCountdown() {
             return new Promise(resolve => {
                 const radius = progressRing.r.baseVal.value;
@@ -251,7 +252,6 @@
                 }, 1000);
             });
         }
-
         async function handleFirstPlay() {
             if (!isFirstPlayAttempt) {
                 player.togglePlay();
@@ -267,7 +267,6 @@
             loaderScreen.classList.add('hidden');
             player.play();
         }
-
         function setupEventListeners() {
             const playerContainer = player.elements.container;
             playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
@@ -286,7 +285,6 @@
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
         }
-
         function setupSmartDownloadButton() {
             const appIdentifier = 'BanglaSerial/1.0';
             const currentUserAgent = navigator.userAgent;
@@ -294,7 +292,6 @@
                 downloadButton.classList.remove('hidden');
             }
         }
-
         async function main() {
             environment = getEnvironment();
             setupEventListeners();
@@ -315,7 +312,6 @@
                 document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: ${error.message}</p>`;
             }
         }
-
         main();
     </script>
 </body>
