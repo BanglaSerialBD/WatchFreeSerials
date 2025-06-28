@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial020</title>
+    <title>WatchBanglaSerial</title>
 
     <!-- PERFORMANCE: Preload critical assets and preconnect to external domains -->
     <link rel="preconnect" href="https://cdn.plyr.io">
@@ -198,7 +198,7 @@
         function updateCenterButtonVisibility() { clearTimeout(centerButtonTimer); centerPlayPauseBtn.classList.add('visible'); centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 2500); }
         function syncAllPlayPauseButtons() { const isPaused = player.paused; ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); playPauseTexts[key].textContent = isPaused ? 'Resume' : 'Pause'; }); if (isPaused) { playPauseTexts.bottom.textContent = 'Play'; playPauseTexts.center.textContent = 'Play'; } }
         function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
-        function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
+        function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 250); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
         async function fetchVideoData(videoKeyword) {
             const cacheKey = `video_data_csv`;
@@ -317,3 +317,5 @@
     </script>
 </body>
 </html>
+
+
