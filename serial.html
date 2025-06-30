@@ -66,7 +66,7 @@
 <body>
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container"><svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg><span id="countdown-number">10</span></div>
-        <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
+        <p id="loading-text">Your video will start shortly...💕</p>
     </div>
     <div id="app-container">
         <div id="player-wrapper">
@@ -83,7 +83,7 @@
                 <div id="main-controls-row"><button id="play-pause-btn" class="action-btn btn-secondary" aria-label="Play/Pause"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="play-pause-text"></span></button><button id="fullscreen-btn" class="action-btn btn-primary" aria-label="Toggle Fullscreen"><svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg><span>Fullscreen</span></button></div>
                 <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="currentColor"/></svg><span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span></a>
             </div>
-            <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
+            <div id="video-info"><div id="video-title-container"></div><p id="video-description">💕Enjoy Watching Bangla Serial💕</p></div>
             
             <!-- ⭐ NEW BACK BUTTON ADDED HERE ⭐ -->
             <button id="back-btn-bottom" class="action-btn btn-secondary">
@@ -186,7 +186,7 @@
             const videoKeyword = sessionStorage.getItem('videoKeyword');
             if (!videoKeyword) { document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: No video selected.</p>`; return; }
             const today = new Date(); const formattedDate = today.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-            videoTitleContainer.innerHTML = `<span>${videoKeyword} আজকের পর্ব 📺</span><span id="date-box">${formattedDate}</span>`;
+            videoTitleContainer.innerHTML = `<span>${videoKeyword}Today's Episode📺💕</span><span id="date-box">${formattedDate}</span>`;
             try {
                 const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
                 player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
