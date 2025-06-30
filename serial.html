@@ -1,97 +1,30 @@
-<script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
-<script>
-    // --- 1. LANGUAGE TRANSLATIONS ---
-    const translations = {
-        'en': { pageTitle: "WatchBanglaSerial", loadingText: "Your video will start shortly...💕", playPauseLabel: "Play/Pause", rotateLabel: "Toggle Rotation", rotateText: "Rotate", exitFullscreenLabel: "Exit Fullscreen", exitFullscreenText: "Exit", fullscreenLabel: "Toggle Fullscreen", fullscreenText: "Fullscreen", downloadAppText: "Download App to Watch Serials", videoDescription: "💕Enjoy Watching Bangla Serial💕", goBackButton: "Go Back", todaysEpisode: "Today's Episode 📺💕", videoNotFound: 'Video not found for "{keyword}". Check the name and try again.', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected.", play: "Play", pause: "Pause", resume: "Resume" },
-        'bn': { pageTitle: "বাংলা সিরিয়াল দেখুন", loadingText: "আপনার ভিডিও শীঘ্রই শুরু হবে...💕", playPauseLabel: "চালান/থামান", rotateLabel: "ঘোরানো টগল করুন", rotateText: "ঘোরান", exitFullscreenLabel: "ফুলস্ক্রিন থেকে প্রস্থান", exitFullscreenText: "প্রস্থান", fullscreenLabel: "ফুলস্ক্রিন টগল করুন", fullscreenText: "ফুলস্ক্রিন", downloadAppText: "নাটক দেখার অ্যাপ ডাউনলোড করুন", videoDescription: "💕বাংলা সিরিয়াল দেখে উপভোগ করুন💕", goBackButton: "ফিরে যান", todaysEpisode: "আজকের পর্ব 📺💕", videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি। নামটি পরীক্ষা করে আবার চেষ্টা করুন।', networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।", noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।", play: "চালান", pause: "থামান", resume: "পুনরায় শুরু" },
-        'hi': { pageTitle: "बांग्ला सीरियल देखें", loadingText: "आपका वीडियो जल्द ही शुरू होगा...💕", playPauseLabel: "चलाएं/रोकें", rotateLabel: "रोटेशन टॉगल करें", rotateText: "घुमाएँ", exitFullscreenLabel: "फ़ुलस्क्रीन से बाहर निकलें", exitFullscreenText: "बाहर", fullscreenLabel: "फ़ुलस्क्रीन टॉगल करें", fullscreenText: "फ़ुलस्क्रीन", downloadAppText: "सीरियल देखने के लिए ऐप डाउनलोड करें", videoDescription: "💕बांग्ला सीरियल देखने का आनंद लें💕", goBackButton: "वापस जाओ", todaysEpisode: "आज का एपिसोड 📺💕", videoNotFound: '"{keyword}" के लिए वीडियो नहीं मिला। नाम जांचें और फिर से प्रयास करें।', networkError: "वीडियो सूची लाने में नेटवर्क त्रुटि।", noVideoSelected: "त्रুটি: कोई वीडियो चयनित नहीं है।", play: "चलाएं", pause: "रोकें", resume: "फिर से शुरू करें" },
-        'es': { pageTitle: "Ver Serial Bangla", loadingText: "Tu video comenzará en breve...💕", playPauseLabel: "Reproducir/Pausa", rotateLabel: "Girar", rotateText: "Girar", exitFullscreenLabel: "Salir de pantalla completa", exitFullscreenText: "Salir", fullscreenLabel: "Pantalla completa", fullscreenText: "Pantalla completa", downloadAppText: "Descargar App para ver series", videoDescription: "💕Disfruta viendo Seriales de Bangla💕", goBackButton: "Regresar", todaysEpisode: "Episodio de hoy 📺💕", videoNotFound: 'No se encontró video para "{keyword}". Revisa el nombre e intenta de nuevo.', networkError: "Error de red al obtener la lista de videos.", noVideoSelected: "Error: No se ha seleccionado ningún video.", play: "Reproducir", pause: "Pausa", resume: "Reanudar" },
-        'ar': { pageTitle: "شاهد مسلسلات بنغالية", loadingText: "سيبدأ الفيديو الخاص بك قريبًا...💕", playPauseLabel: "تشغيل/إيقاف مؤقت", rotateLabel: "تبديل الدوران", rotateText: "تدوير", exitFullscreenLabel: "الخروج من وضع ملء الشاشة", exitFullscreenText: "خروج", fullscreenLabel: "تبديل ملء الشاشة", fullscreenText: "ملء الشاشة", downloadAppText: "قم بتنزيل التطبيق لمشاهدة المسلسلات", videoDescription: "💕استمتع بمشاهدة المسلسلات البنغالية💕", goBackButton: "عد", todaysEpisode: "حلقة اليوم 📺💕", videoNotFound: 'لم يتم العثور على فيديو لـ "{keyword}". تحقق من الاسم وحاول مرة أخرى।', networkError: "خطأ في الشبكة أثناء جلب قائمة الفيديو।", noVideoSelected: "خطأ: لم يتم تحديد فيديو।", play: "تشغيل", pause: "إيقاف مؤقت", resume: "استئناف" }
-    };
-
-    // --- 2. LANGUAGE DETECTION & HELPERS ---
-    let currentLang = 'en';
-    function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; }
-    function applyTranslations(lang) { currentLang = lang; const dict = translations[lang] || translations['en']; document.documentElement.lang = lang; document.title = dict.pageTitle; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if (dict[key]) { el.textContent = dict[key]; } }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { const key = el.dataset.translateAriaKey; if (dict[key]) { el.setAttribute('aria-label', dict[key]); } }); }
-    function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
-
-    // --- 3. SCRIPT LOGIC ---
-    const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
-    const COUNTDOWN_SECONDS = 10;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyword Test</title>
+    <style>
+        body { background-color: #0c0c0c; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #f1f1f1; padding: 40px; }
+        h1 { color: #00AFFF; }
+        p { color: #aaaaaa; }
+    </style>
+</head>
+<body>
+    <h1>Testing for a stored keyword...</h1>
     
-    const loaderScreen = document.getElementById("loader-screen");
-    const countdownNumberEl = document.getElementById("countdown-number");
-    const progressRing = document.getElementById("progress-ring-circle");
-    const videoTitleContainer = document.getElementById("video-title-container");
-    const playerWrapper = document.getElementById("player-wrapper");
-    const playPauseBtn = document.getElementById("play-pause-btn");
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    const floatingButtonsContainer = document.getElementById("floating-buttons-container");
-    const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn");
-    const rotateBtn = document.getElementById("rotate-btn");
-    const backBtnBottom = document.getElementById("back-btn-bottom");
-    const centerPlayPauseBtn = document.getElementById('center-play-pause-btn');
-    const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") };
-    const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
-    const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
-    const downloadButton = document.getElementById('download-app-btn');
-    const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
-    
-    let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
-    let environment = 'desktop';
-    let isFirstPlayAttempt = true;
+    <script>
+        // This is the only script on the page.
+        // It tries to get the keyword that redirect.html should have stored.
+        const videoKeyword = sessionStorage.getItem('videoKeyword');
 
-    function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
-    function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
-    function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } }
-    function updateCenterButtonVisibility() { clearTimeout(centerButtonTimer); centerPlayPauseBtn.classList.add('visible'); centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1500); }
-    
-    function syncAllPlayPauseButtons() { const isPaused = player.paused; const playText = getTranslatedString('play'); const pauseText = getTranslatedString('pause'); const resumeText = getTranslatedString('resume'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); if (isFirstPlayAttempt) { playPauseTexts[key].textContent = playText; } else { playPauseTexts[key].textContent = isPaused ? resumeText : pauseText; } }); }
-    function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
-    function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
-    function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-    
-    async function fetchVideoData(videoKeyword) {
-        const cacheKey = `video_data_csv`;
-        const timestampKey = `video_data_timestamp`;
-        const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
-        try {
-            const cachedData = localStorage.getItem(cacheKey);
-            const cachedTimestamp = localStorage.getItem(timestampKey);
-            let csvText;
-            if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) {
-                csvText = cachedData;
-            } else {
-                const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error(getTranslatedString('networkError'));
-                csvText = await response.text();
-                localStorage.setItem(cacheKey, csvText);
-                localStorage.setItem(timestampKey, String(Date.now()));
-            }
-
-            const targetKeyword = videoKeyword.trim().toLowerCase();
-            const videoRow = csvText
-                .split(/\r?\n/) 
-                .map(line => line.split(","))
-                .find(row => {
-                    if (!row || !row[0]) return false;
-                    const csvKeyword = row[0].replace(/\r/g, '').trim().toLowerCase();
-                    return csvKeyword === targetKeyword;
-                });
-
-            if (videoRow && videoRow[1]) {
-                return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" };
-            }
-            throw new Error(getTranslatedString('videoNotFound', { keyword: videoKeyword }));
-        } catch (error) {
-            localStorage.removeItem(cacheKey);
-            localStorage.removeItem(timestampKey);
-            throw error;
+        // Check if a keyword was found.
+        if (videoKeyword) {
+            // If it works, display the keyword we found.
+            document.body.innerHTML = '<h1>Success!</h1><p>The keyword received from redirect.html is:</p><h2>' + videoKeyword + '</h2>';
+        } else {
+            // If it fails, display an error.
+            document.body.innerHTML = '<h1>Failed.</h1><p>The serial.html page did not receive a keyword from redirect.html.</p>';
         }
-    }
-
-    function startLoaderCountdown() {
-        return new Promise(resolve => {
-            const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
-            countdownTimerInterval = setInterval(().
+    </script>
+</body>
+</html>
