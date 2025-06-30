@@ -1,170 +1,259 @@
-<script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
-<script>
-    // --- 1. LANGUAGE TRANSLATIONS ---
-    const translations = {
-        'en': { pageTitle: "WatchBanglaSerial", loadingText: "Your video will start shortly...💕", playPauseLabel: "Play/Pause", rotateLabel: "Toggle Rotation", rotateText: "Rotate", exitFullscreenLabel: "Exit Fullscreen", exitFullscreenText: "Exit", fullscreenLabel: "Toggle Fullscreen", fullscreenText: "Fullscreen", downloadAppText: "Download App to Watch Serials", videoDescription: "💕Enjoy Watching Bangla Serial💕", goBackButton: "Go Back", todaysEpisode: "Today's Episode 📺💕", videoNotFound: 'Video not found for "{keyword}". Check the name and try again.', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected.", play: "Play", pause: "Pause", resume: "Resume" },
-        'bn': { pageTitle: "বাংলা সিরিয়াল দেখুন", loadingText: "আপনার ভিডিও শীঘ্রই শুরু হবে...💕", playPauseLabel: "চালান/থামান", rotateLabel: "ঘোরানো টগল করুন", rotateText: "ঘোরান", exitFullscreenLabel: "ফুলস্ক্রিন থেকে প্রস্থান", exitFullscreenText: "প্রস্থান", fullscreenLabel: "ফুলস্ক্রিন টগল করুন", fullscreenText: "ফুলস্ক্রিন", downloadAppText: "নাটক দেখার অ্যাপ ডাউনলোড করুন", videoDescription: "💕বাংলা সিরিয়াল দেখে উপভোগ করুন💕", goBackButton: "ফিরে যান", todaysEpisode: "আজকের পর্ব 📺💕", videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি। নামটি পরীক্ষা করে আবার চেষ্টা করুন।', networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।", noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।", play: "চালান", pause: "থামান", resume: "পুনরায় শুরু" },
-        'hi': { pageTitle: "बांग्ला सीरियल देखें", loadingText: "आपका वीडियो जल्द ही शुरू होगा...💕", playPauseLabel: "चलाएं/रोकें", rotateLabel: "रोटेशन टॉगल करें", rotateText: "घुमाएँ", exitFullscreenLabel: "फ़ुलस्क्रीन से बाहर निकलें", exitFullscreenText: "बाहर", fullscreenLabel: "फ़ुलस्क्रीन टॉगल करें", fullscreenText: "फ़ुलस्क्रीन", downloadAppText: "सीरियल देखने के लिए ऐप डाउनलोड करें", videoDescription: "💕बांग्ला सीरियल देखने का आनंद लें💕", goBackButton: "वापस जाओ", todaysEpisode: "आज का एपिसोड 📺💕", videoNotFound: '"{keyword}" के लिए वीडियो नहीं मिला। नाम जांचें और फिर से प्रयास करें।', networkError: "वीडियो सूची लाने में नेटवर्क त्रुटि।", noVideoSelected: "त्रुटि: कोई वीडियो चयनित नहीं है।", play: "चलाएं", pause: "रोकें", resume: "फिर से शुरू करें" },
-        'es': { pageTitle: "Ver Serial Bangla", loadingText: "Tu video comenzará en breve...💕", playPauseLabel: "Reproducir/Pausa", rotateLabel: "Girar", rotateText: "Girar", exitFullscreenLabel: "Salir de pantalla completa", exitFullscreenText: "Salir", fullscreenLabel: "Pantalla completa", fullscreenText: "Pantalla completa", downloadAppText: "Descargar App para ver series", videoDescription: "💕Disfruta viendo Seriales de Bangla💕", goBackButton: "Regresar", todaysEpisode: "Episodio de hoy 📺💕", videoNotFound: 'No se encontró video para "{keyword}". Revisa el nombre e intenta de nuevo.', networkError: "Error de red al obtener la lista de videos.", noVideoSelected: "Error: No se ha seleccionado ningún video.", play: "Reproducir", pause: "Pausa", resume: "Reanudar" },
-        'ar': { pageTitle: "شاهد مسلسلات بنغالية", loadingText: "سيبدأ الفيديو الخاص بك قريبًا...💕", playPauseLabel: "تشغيل/إيقاف مؤقت", rotateLabel: "تبديل الدوران", rotateText: "تدوير", exitFullscreenLabel: "الخروج من وضع ملء الشاشة", exitFullscreenText: "خروج", fullscreenLabel: "تبديل ملء الشاشة", fullscreenText: "ملء الشاشة", downloadAppText: "قم بتنزيل التطبيق لمشاهدة المسلسلات", videoDescription: "💕استمتع بمشاهدة المسلسلات البنغالية💕", goBackButton: "عد", todaysEpisode: "حلقة اليوم 📺💕", videoNotFound: 'لم يتم العثور على فيديو لـ "{keyword}". تحقق من الاسم وحاول مرة أخرى.', networkError: "خطأ في الشبكة أثناء جلب قائمة الفيديو.", noVideoSelected: "خطأ: لم يتم تحديد فيديو.", play: "تشغيل", pause: "إيقاف مؤقت", resume: "استئناف" }
-    };
+<!DOCTYPE html>
+<!-- The 'lang' attribute will be set dynamically -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!-- The title will be set dynamically -->
+    <title>Loading...</title>
+    <link rel="preconnect" href="https://cdn.plyr.io">
+    <link rel="preconnect" href="https://docs.google.com">
+    <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
+    <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.js" as="script">
+    <link rel="icon" type="image/png" href="letter-b.png">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
+    <style>
+        :root { --primary-accent: #00AFFF; --primary-accent-darker: #008fcc; --text-primary: #f1f1f1; --text-secondary: #aaaaaa; --bg-color: #0c0c0c; --bg-secondary-color: #1a1a1a; --border-color: rgba(255, 255, 255, 0.1); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+        #app-container { display: flex; flex-direction: column; width: 100%; height: 100vh; }
+        .content-container { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 16px 24px; box-sizing: border-box; overflow-y: auto; touch-action: pan-y; overscroll-behavior-y: contain; }
+        #player-wrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; --plyr-color-main: var(--primary-accent); overflow: hidden; transition: all 0.3s ease-in-out; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        #player { width: 100%; height: 100%; object-fit: contain; }
+        #player-wrapper.simulated-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; max-width: none; border-radius: 0; z-index: 50; margin-bottom: 0; }
+        #player-wrapper.simulated-fullscreen.force-rotate { top: 50%; left: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); }
+        .action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 24px; font-size: 16px; font-weight: 600; color: var(--text-primary); border: none; border-radius: 8px; cursor: pointer; transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .action-btn svg { width: 22px; height: 22px; fill: currentColor; }
+        .btn-primary { background-color: var(--primary-accent); }
+        .btn-primary:hover { background-color: var(--primary-accent-darker); }
+        .btn-secondary { background-color: var(--bg-secondary-color); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: #2a2a2a; }
+        #custom-controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 1280px; opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards; animation-delay: 0.2s; margin-bottom: 20px; }
+        #main-controls-row { display: flex; justify-content: center; gap: 16px; width: 100%; }
+        #download-app-btn { width: 100%; max-width: 450px; background: var(--primary-accent); text-decoration: none; color: white; text-align: center; }
+        #download-app-btn:hover { background: var(--primary-accent-darker); }
+        #center-play-pause-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); z-index: 52; padding: 0 30px; height: 60px; border-radius: 12px; background-color: rgba(20,20,20,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
+        #center-play-pause-btn.visible { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1.1); }
+        #center-play-pause-btn svg { width: 28px; height: 28px; }
+        #floating-buttons-container { position: absolute; top: 20px; right: 20px; z-index: 55; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; opacity: 1; transition: opacity 0.4s ease; }
+        .floating-btn { padding: 0 16px; height: 44px; background-color: rgba(20,20,20,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); }
+        @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; color: var(--text-primary); background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.4s forwards; }
+        #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 22px; margin: 0 0 10px 0; font-weight: 600; }
+        #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
+        #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
+        #loader-screen { position: fixed; top: 0; left: 0; z-index: 100; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background-color: rgba(12, 12, 12, 0.85); backdrop-filter: blur(5px); transition: opacity 0.5s ease-out; opacity: 1; pointer-events: all; }
+        #loader-screen.hidden { opacity: 0; pointer-events: none; }
+        .hidden { display: none !important; }
+        #pie-timer-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+        #pie-timer-svg { transform: rotate(-90deg); }
+        .progress-ring-circle { transition: stroke-dashoffset 1s linear; }
+        #countdown-number { position: absolute; font-size: 48px; font-weight: 700; color: var(--primary-accent); animation: number-pop 1s infinite; animation-timing-function: ease-in-out; }
+        @keyframes number-pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        #loading-text { color: var(--text-secondary); font-size: 16px; text-align: center; }
+        #back-btn-bottom { width: 100%; max-width: 450px; margin-top: 20px; opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.6s forwards; }
+    </style>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
+    </script>
+</head>
+<body>
+    <div id="loader-screen" class="hidden">
+        <div id="pie-timer-container"><svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg><span id="countdown-number">10</span></div>
+        <p id="loading-text" data-translate-key="loadingText"></p>
+    </div>
+    <div id="app-container">
+        <div id="player-wrapper">
+            <video id="player" playsinline controls muted></video>
+            <button id="center-play-pause-btn" class="action-btn" data-translate-aria-key="playPauseLabel"><svg id="center-play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="center-pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="center-play-pause-text"></span></button>
+            <div id="floating-buttons-container" class="hidden">
+                <button id="rotate-btn" class="action-btn floating-btn hidden" data-translate-aria-key="rotateLabel"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg><span data-translate-key="rotateText"></span></button>
+                <button id="exit-fullscreen-btn" class="action-btn floating-btn" data-translate-aria-key="exitFullscreenLabel"><svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg><span data-translate-key="exitFullscreenText"></span></button>
+            </div>
+        </div>
+        <div class="content-container">
+            <div id="custom-controls-wrapper">
+                <div id="main-controls-row">
+                    <button id="play-pause-btn" class="action-btn btn-secondary" data-translate-aria-key="playPauseLabel"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="play-pause-text"></span></button>
+                    <button id="fullscreen-btn" class="action-btn btn-primary" data-translate-aria-key="fullscreenLabel"><svg viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,10h2V7h3V5H5V10z M17,19h-3v2h5v-5h-2V19z M14,5v2h3v3h2V5H14z"></path></svg><span data-translate-key="fullscreenText"></span></button>
+                </div>
+                <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="currentColor"/></svg><span data-translate-key="downloadAppText"></span></a>
+            </div>
+            <div id="video-info">
+                <div id="video-title-container"></div>
+                <p id="video-description" data-translate-key="videoDescription"></p>
+            </div>
+            <button id="back-btn-bottom" class="action-btn btn-secondary">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+                <span data-translate-key="goBackButton"></span>
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
+    <script>
+        // --- 1. LANGUAGE TRANSLATIONS ---
+        const translations = {
+            'en': { pageTitle: "WatchBanglaSerial", loadingText: "Your video will start shortly...💕", playPauseLabel: "Play/Pause", rotateLabel: "Toggle Rotation", rotateText: "Rotate", exitFullscreenLabel: "Exit Fullscreen", exitFullscreenText: "Exit", fullscreenLabel: "Toggle Fullscreen", fullscreenText: "Fullscreen", downloadAppText: "Download App to Watch Serials", videoDescription: "💕Enjoy Watching Bangla Serial💕", goBackButton: "Go Back", todaysEpisode: "Today's Episode 📺💕", videoNotFound: 'Video not found for "{keyword}". Check the name and try again.', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected.", play: "Play", pause: "Pause", resume: "Resume" },
+            'bn': { pageTitle: "বাংলা সিরিয়াল দেখুন", loadingText: "আপনার ভিডিও শীঘ্রই শুরু হবে...💕", playPauseLabel: "চালান/থামান", rotateLabel: "ঘোরানো টগল করুন", rotateText: "ঘোরান", exitFullscreenLabel: "ফুলস্ক্রিন থেকে প্রস্থান", exitFullscreenText: "প্রস্থান", fullscreenLabel: "ফুলস্ক্রিন টগল করুন", fullscreenText: "ফুলস্ক্রিন", downloadAppText: "নাটক দেখার অ্যাপ ডাউনলোড করুন", videoDescription: "💕বাংলা সিরিয়াল দেখে উপভোগ করুন💕", goBackButton: "ফিরে যান", todaysEpisode: "আজকের পর্ব 📺💕", videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি। নামটি পরীক্ষা করে আবার চেষ্টা করুন।', networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।", noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।", play: "চালান", pause: "থামান", resume: "পুনরায় শুরু" },
+            'hi': { pageTitle: "बांग्ला सीरियल देखें", loadingText: "आपका वीडियो जल्द ही शुरू होगा...💕", playPauseLabel: "चलाएं/रोकें", rotateLabel: "रोटेशन टॉगल करें", rotateText: "घुमाएँ", exitFullscreenLabel: "फ़ुलस्क्रीन से बाहर निकलें", exitFullscreenText: "बाहर", fullscreenLabel: "फ़ुलस्क्रीन टॉगल करें", fullscreenText: "फ़ुलस्क्रीन", downloadAppText: "सीरियल देखने के लिए ऐप डाउनलोड करें", videoDescription: "💕बांग्ला सीरियल देखने का आनंद लें💕", goBackButton: "वापस जाओ", todaysEpisode: "आज का एपिसोड 📺💕", videoNotFound: '"{keyword}" के लिए वीडियो नहीं मिला। नाम जांचें और फिर से प्रयास करें।', networkError: "वीडियो सूची लाने में नेटवर्क त्रुटि।", noVideoSelected: "त्रुटि: कोई वीडियो चयनित नहीं है।", play: "चलाएं", pause: "रोकें", resume: "फिर से शुरू करें" },
+            // You can add many more languages here if you want
+            'es': { pageTitle: "Ver Serial Bangla", loadingText: "Tu video comenzará en breve...💕", playPauseLabel: "Reproducir/Pausa", rotateLabel: "Girar", rotateText: "Girar", exitFullscreenLabel: "Salir de pantalla completa", exitFullscreenText: "Salir", fullscreenLabel: "Pantalla completa", fullscreenText: "Pantalla completa", downloadAppText: "Descargar App para ver series", videoDescription: "💕Disfruta viendo Seriales de Bangla💕", goBackButton: "Regresar", todaysEpisode: "Episodio de hoy 📺💕", videoNotFound: 'No se encontró video para "{keyword}". Revisa el nombre e intenta de nuevo.', networkError: "Error de red al obtener la lista de videos.", noVideoSelected: "Error: No se ha seleccionado ningún video.", play: "Reproducir", pause: "Pausa", resume: "Reanudar" },
+            'ar': { pageTitle: "شاهد مسلسلات بنغالية", loadingText: "سيبدأ الفيديو الخاص بك قريبًا...💕", playPauseLabel: "تشغيل/إيقاف مؤقت", rotateLabel: "تبديل الدوران", rotateText: "تدوير", exitFullscreenLabel: "الخروج من وضع ملء الشاشة", exitFullscreenText: "خروج", fullscreenLabel: "تبديل ملء الشاشة", fullscreenText: "ملء الشاشة", downloadAppText: "قم بتنزيل التطبيق لمشاهدة المسلسلات", videoDescription: "💕استمتع بمشاهدة المسلسلات البنغالية💕", goBackButton: "عد", todaysEpisode: "حلقة اليوم 📺💕", videoNotFound: 'لم يتم العثور على فيديو لـ "{keyword}". تحقق من الاسم وحاول مرة أخرى.', networkError: "خطأ في الشبكة أثناء جلب قائمة الفيديو.", noVideoSelected: "خطأ: لم يتم تحديد فيديو.", play: "تشغيل", pause: "إيقاف مؤقت", resume: "استئناف" }
+        };
 
-    // --- 2. LANGUAGE DETECTION & HELPERS ---
-    let currentLang = 'en';
-    function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; }
-    function applyTranslations(lang) { currentLang = lang; const dict = translations[lang] || translations['en']; document.documentElement.lang = lang; document.title = dict.pageTitle; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if (dict[key]) { el.textContent = dict[key]; } }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { const key = el.dataset.translateAriaKey; if (dict[key]) { el.setAttribute('aria-label', dict[key]); } }); }
-    function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
+        // --- 2. LANGUAGE DETECTION & HELPERS ---
+        let currentLang = 'en';
+        function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; }
+        function applyTranslations(lang) { currentLang = lang; const dict = translations[lang] || translations['en']; document.documentElement.lang = lang; document.title = dict.pageTitle; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if (dict[key]) { el.textContent = dict[key]; } }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { const key = el.dataset.translateAriaKey; if (dict[key]) { el.setAttribute('aria-label', dict[key]); } }); }
+        function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
 
-    // --- 3. SCRIPT LOGIC ---
-    const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
-    const COUNTDOWN_SECONDS = 10;
-    
-    const loaderScreen = document.getElementById("loader-screen");
-    const countdownNumberEl = document.getElementById("countdown-number");
-    const progressRing = document.getElementById("progress-ring-circle");
-    const videoTitleContainer = document.getElementById("video-title-container");
-    const playerWrapper = document.getElementById("player-wrapper");
-    const playPauseBtn = document.getElementById("play-pause-btn");
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    const floatingButtonsContainer = document.getElementById("floating-buttons-container");
-    const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn");
-    const rotateBtn = document.getElementById("rotate-btn");
-    const backBtnBottom = document.getElementById("back-btn-bottom");
-    const centerPlayPauseBtn = document.getElementById('center-play-pause-btn');
-    const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") };
-    const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
-    const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
-    const downloadButton = document.getElementById('download-app-btn');
-    const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
-    
-    let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
-    let environment = 'desktop';
-    let isFirstPlayAttempt = true;
+        // --- 3. SCRIPT LOGIC ---
+        const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
+        const COUNTDOWN_SECONDS = 10;
+        
+        const loaderScreen = document.getElementById("loader-screen");
+        const countdownNumberEl = document.getElementById("countdown-number");
+        const progressRing = document.getElementById("progress-ring-circle");
+        const videoTitleContainer = document.getElementById("video-title-container");
+        const playerWrapper = document.getElementById("player-wrapper");
+        const playPauseBtn = document.getElementById("play-pause-btn");
+        const fullscreenBtn = document.getElementById("fullscreen-btn");
+        const floatingButtonsContainer = document.getElementById("floating-buttons-container");
+        const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn");
+        const rotateBtn = document.getElementById("rotate-btn");
+        const backBtnBottom = document.getElementById("back-btn-bottom");
+        const centerPlayPauseBtn = document.getElementById('center-play-pause-btn');
+        const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") };
+        const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
+        const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
+        const downloadButton = document.getElementById('download-app-btn');
+        const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
+        
+        let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
+        let environment = 'desktop';
+        let isFirstPlayAttempt = true;
 
-    function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
-    function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
-    function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } }
-    function updateCenterButtonVisibility() { clearTimeout(centerButtonTimer); centerPlayPauseBtn.classList.add('visible'); centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1500); }
-    
-    function syncAllPlayPauseButtons() { const isPaused = player.paused; const playText = getTranslatedString('play'); const pauseText = getTranslatedString('pause'); const resumeText = getTranslatedString('resume'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); if (isFirstPlayAttempt) { playPauseTexts[key].textContent = playText; } else { playPauseTexts[key].textContent = isPaused ? resumeText : pauseText; } }); }
-    function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
-    function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
-    function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-    
-    async function fetchVideoData(videoKeyword) {
-        const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
-        try {
-            const cachedData = localStorage.getItem(cacheKey); const cachedTimestamp = localStorage.getItem(timestampKey); let csvText;
-            if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) { csvText = cachedData; } else {
-                const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); 
-                if (!response.ok) throw new Error(getTranslatedString('networkError')); 
-                csvText = await response.text(); localStorage.setItem(cacheKey, csvText); localStorage.setItem(timestampKey, String(Date.now()));
+        function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
+        function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
+        function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } }
+        function updateCenterButtonVisibility() { clearTimeout(centerButtonTimer); centerPlayPauseBtn.classList.add('visible'); centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1500); }
+        
+        function syncAllPlayPauseButtons() { const isPaused = player.paused; const playText = getTranslatedString('play'); const pauseText = getTranslatedString('pause'); const resumeText = getTranslatedString('resume'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); if (isFirstPlayAttempt) { playPauseTexts[key].textContent = playText; } else { playPauseTexts[key].textContent = isPaused ? resumeText : pauseText; } }); }
+        function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
+        function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
+        function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
+        
+        async function fetchVideoData(videoKeyword) {
+            const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
+            try {
+                const cachedData = localStorage.getItem(cacheKey); const cachedTimestamp = localStorage.getItem(timestampKey); let csvText;
+                if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) { csvText = cachedData; } else {
+                    const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); 
+                    if (!response.ok) throw new Error(getTranslatedString('networkError')); 
+                    csvText = await response.text(); localStorage.setItem(cacheKey, csvText); localStorage.setItem(timestampKey, String(Date.now()));
+                }
+                const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0] && row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase());
+                if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } 
+                throw new Error(getTranslatedString('videoNotFound', { keyword: videoKeyword }));
+            } catch (error) { localStorage.removeItem(cacheKey); localStorage.removeItem(timestampKey); throw error; }
+        }
+
+        function startLoaderCountdown() {
+            return new Promise(resolve => {
+                const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
+                countdownTimerInterval = setInterval(() => {
+                    count--; countdownNumberEl.textContent = count;
+                    // The CSS transition handles the animation smoothly.
+                    const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
+                    progressRing.style.strokeDashoffset = circumference - progress * circumference;
+                    if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; resolve(); }
+                }, 1000);
+            });
+        }
+        
+        // THIS IS THE RELIABLE, SIMPLIFIED LOADING FUNCTION
+        async function handleFirstPlay() {
+            if (!isFirstPlayAttempt) {
+                player.togglePlay();
+                return;
             }
+            isFirstPlayAttempt = false;
+            
+            // Show the countdown loader
+            loaderScreen.classList.remove('hidden');
 
-            // *** START OF CORRECTION ***
-            // More robust keyword matching to handle invisible characters from the CSV
-            const targetKeyword = videoKeyword.trim().toLowerCase();
-            const videoRow = csvText
-                .split(/\r?\n/) // Robustly split lines
-                .map(line => line.split(","))
-                .find(row => {
-                    if (!row || !row[0]) return false;
-                    // Clean the keyword from the CSV by removing carriage returns and trimming space
-                    const csvKeyword = row[0].replace(/\r/g, '').trim().toLowerCase();
-                    return csvKeyword === targetKeyword;
-                });
-            // *** END OF CORRECTION ***
+            try {
+                // Fetch video data when the user clicks play
+                const videoKeyword = sessionStorage.getItem('videoKeyword');
+                if (!videoKeyword) throw new Error(getTranslatedString('noVideoSelected'));
+                
+                const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
+                player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
+                
+                // Wait for the countdown OR for the video to be ready, whichever is first
+                const countdownPromise = startLoaderCountdown();
+                const videoReadyPromise = new Promise(resolve => player.once('canplay', resolve));
+                await Promise.race([countdownPromise, videoReadyPromise]);
+                
+                // Cleanup and play
+                clearInterval(countdownTimerInterval);
+                if (player.muted) { player.muted = false; }
+                loaderScreen.classList.add('hidden');
+                player.play();
 
-            if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } 
-            throw new Error(getTranslatedString('videoNotFound', { keyword: videoKeyword }));
-        } catch (error) { localStorage.removeItem(cacheKey); localStorage.removeItem(timestampKey); throw error; }
-    }
-
-    function startLoaderCountdown() {
-        return new Promise(resolve => {
-            const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
-            countdownTimerInterval = setInterval(() => {
-                count--; countdownNumberEl.textContent = count;
-                const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
-                progressRing.style.strokeDashoffset = circumference - progress * circumference;
-                if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; resolve(); }
-            }, 1000);
-        });
-    }
-    
-    async function handleFirstPlay() {
-        if (!isFirstPlayAttempt) {
-            player.togglePlay();
-            return;
+            } catch (error) {
+                // If anything fails, hide the loader and show the error
+                loaderScreen.classList.add('hidden');
+                alert(error.message); // Use a simple alert for critical errors
+                // Optionally, redirect or show the error in the body
+                // document.body.innerHTML = `<p style="color:#FF5555;...">${error.message}</p>`;
+            }
         }
-        isFirstPlayAttempt = false;
-        
-        loaderScreen.classList.remove('hidden');
 
-        try {
+        function setupEventListeners() {
+            const playerContainer = player.elements.container;
+            playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
+            playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
+            fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handleFirstPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
+            exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
+            rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
+            backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } });
+            
+            playPauseBtn.addEventListener('click', handleFirstPlay);
+            centerPlayPauseBtn.addEventListener('click', () => { handleFirstPlay(); setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); });
+            
+            player.on('enterfullscreen', handleEnterFullscreen);
+            player.on('exitfullscreen', handleExitFullscreen);
+            player.on('play', syncAllPlayPauseButtons);
+            player.on('pause', syncAllPlayPauseButtons);
+            player.on('ready', syncAllPlayPauseButtons);
+        }
+
+        function setupSmartDownloadButton() {
+            const appIdentifier = 'BanglaSerial/1.0'; const currentUserAgent = navigator.userAgent;
+            if (!currentUserAgent.includes(appIdentifier)) { downloadButton.classList.remove('hidden'); }
+        }
+        
+        function main() {
+            applyTranslations(getBestLanguage());
+            environment = getEnvironment(); 
+            setupEventListeners(); 
+            setupSmartDownloadButton(); 
+            loaderScreen.classList.add('hidden');
+            
             const videoKeyword = sessionStorage.getItem('videoKeyword');
-            if (!videoKeyword) throw new Error(getTranslatedString('noVideoSelected'));
+            if (!videoKeyword) { 
+                document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`;
+                return; 
+            }
             
-            const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
-            player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
-            
-            const countdownPromise = startLoaderCountdown();
-            const videoReadyPromise = new Promise(resolve => player.once('canplay', resolve));
-            await Promise.race([countdownPromise, videoReadyPromise]);
-            
-            clearInterval(countdownTimerInterval);
-            if (player.muted) { player.muted = false; }
-            loaderScreen.classList.add('hidden');
-            player.play();
-
-        } catch (error) {
-            loaderScreen.classList.add('hidden');
-            alert(error.message); 
+            const today = new Date(); 
+            const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
+            videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`;
         }
-    }
-
-    function setupEventListeners() {
-        const playerContainer = player.elements.container;
-        playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
-        playerContainer.addEventListener('touchstart', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }, { passive: true });
-        fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handleFirstPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
-        exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
-        rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
-        backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } });
-        
-        playPauseBtn.addEventListener('click', handleFirstPlay);
-        centerPlayPauseBtn.addEventListener('click', () => { handleFirstPlay(); setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); });
-        
-        player.on('enterfullscreen', handleEnterFullscreen);
-        player.on('exitfullscreen', handleExitFullscreen);
-        player.on('play', syncAllPlayPauseButtons);
-        player.on('pause', syncAllPlayPauseButtons);
-        player.on('ready', syncAllPlayPauseButtons);
-    }
-
-    function setupSmartDownloadButton() {
-        const appIdentifier = 'BanglaSerial/1.0'; const currentUserAgent = navigator.userAgent;
-        if (!currentUserAgent.includes(appIdentifier)) { downloadButton.classList.remove('hidden'); }
-    }
-    
-    function main() {
-        applyTranslations(getBestLanguage());
-        environment = getEnvironment(); 
-        setupEventListeners(); 
-        setupSmartDownloadButton(); 
-        loaderScreen.classList.add('hidden');
-        
-        // This is the correct logic that assumes redirect.html has already run
-        const videoKeyword = sessionStorage.getItem('videoKeyword');
-        if (!videoKeyword) { 
-            document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`;
-            return; 
-        }
-        
-        const today = new Date(); 
-        const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
-        videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`;
-    }
-    main();
-</script>
+        main();
+    </script>
+</body>
+</html>
