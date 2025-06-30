@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial00030</title>
+    <title>WatchBanglaSerial</title>
     <link rel="preconnect" href="https://cdn.plyr.io">
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
@@ -58,7 +58,7 @@
 <body>
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container"><svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg><span id="countdown-number">10</span></div>
-        <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
+        <p id="loading-.text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
     <div id="app-container">
         <div id="player-wrapper">
@@ -85,7 +85,7 @@
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
         const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
-        // Ensure this URL is pointing to your published Live_Dashboard sheet
+        // Make sure this is the correct published URL for your "Live_Dashboard" sheet.
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
         const loaderScreen = document.getElementById("loader-screen");
@@ -117,38 +117,37 @@
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
         
-               async function fetchVideoData(videoKeyword) {
-            const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
+        // ---------- FINAL, SIMPLIFIED fetchVideoData FUNCTION ----------
+        async function fetchVideoData(videoKeyword) {
             try {
-                // The cache in the app is unreliable. We will force a fresh download every time.
-                
-                // --- THIS IS THE CACHE-BUSTING FIX ---
-                // We add a unique timestamp to the URL to make it look like a new link every time.
-                const nocacheUrl = `${SHEET_CSV_URL}&_=${new Date().getTime()}`;
+                // Always fetch a fresh copy. Do not use sessionStorage.
+                // Tell the browser this request cannot use its cache.
+                const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); 
+                if (!response.ok) {
+                    throw new Error("Failed to fetch video list from the network."); 
+                }
 
-                // Now we fetch this new, unique URL, telling the browser not to cache it.
-                const response = await fetch(nocacheUrl, { cache: 'no-store' }); 
-                if (!response.ok) throw new Error("Network error fetching video list"); 
-                
                 const csvText = await response.text();
                 
-                // The rest of your code is perfect and does not need to be changed.
+                // This is the robust lookup that handles invisible characters.
                 const targetKeyword = videoKeyword.trim().toLowerCase();
                 const videoRow = csvText
                     .split(/\r?\n/) // Robustly split all kinds of newlines
                     .map(line => line.split(","))
                     .find(row => {
                         if (!row || !row[0]) return false;
-                        // Robustly clean the keyword from the sheet before comparing
                         const csvKeyword = row[0].replace(/\r/g, '').trim().toLowerCase();
                         return csvKeyword === targetKeyword;
                     });
 
-                if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } 
+                if (videoRow && videoRow[1]) { 
+                    return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; 
+                } 
+                
+                // If the loop finishes and no match is found, throw an error.
                 throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
-
             } catch (error) { 
-                // We no longer try to use sessionStorage for the cache since it was the source of the problem.
+                // Pass any error (network or lookup) along to the main function to be displayed.
                 throw new Error(error.message); 
             }
         }
@@ -158,7 +157,7 @@
                 const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
                 countdownTimerInterval = setInterval(() => {
                     count--; countdownNumberEl.textContent = count; const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS; const offset = circumference - progress * circumference;
-                    progressRing.style.strokeDashoffset = offset; // This line had an extra const definition, fixed it
+                    progressRing.style.strokeDashoffset = offset;
                     if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; resolve(); }
                 }, 1000);
             });
