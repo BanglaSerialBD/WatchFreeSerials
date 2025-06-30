@@ -117,16 +117,22 @@
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
         
-        // ---------- START OF THE ONLY CORRECTION ----------
-        async function fetchVideoData(videoKeyword) {
+               async function fetchVideoData(videoKeyword) {
             const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
             try {
-                const cachedData = sessionStorage.getItem(cacheKey); const cachedTimestamp = sessionStorage.getItem(timestampKey); let csvText;
-                if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) { csvText = cachedData; } else {
-                    const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); if (!response.ok) throw new Error("Network error fetching video list"); csvText = await response.text(); sessionStorage.setItem(cacheKey, csvText); sessionStorage.setItem(timestampKey, String(Date.now()));
-                }
+                // The cache in the app is unreliable. We will force a fresh download every time.
                 
-                // This is the improved part that fixes the invisible character bug
+                // --- THIS IS THE CACHE-BUSTING FIX ---
+                // We add a unique timestamp to the URL to make it look like a new link every time.
+                const nocacheUrl = `${SHEET_CSV_URL}&_=${new Date().getTime()}`;
+
+                // Now we fetch this new, unique URL, telling the browser not to cache it.
+                const response = await fetch(nocacheUrl, { cache: 'no-store' }); 
+                if (!response.ok) throw new Error("Network error fetching video list"); 
+                
+                const csvText = await response.text();
+                
+                // The rest of your code is perfect and does not need to be changed.
                 const targetKeyword = videoKeyword.trim().toLowerCase();
                 const videoRow = csvText
                     .split(/\r?\n/) // Robustly split all kinds of newlines
@@ -141,9 +147,11 @@
                 if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } 
                 throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
 
-            } catch (error) { sessionStorage.removeItem(cacheKey); sessionStorage.removeItem(timestampKey); throw new Error(error.message); }
+            } catch (error) { 
+                // We no longer try to use sessionStorage for the cache since it was the source of the problem.
+                throw new Error(error.message); 
+            }
         }
-        // ---------- END OF THE ONLY CORRECTION ----------
 
         function startLoaderCountdown() {
             return new Promise(resolve => {
