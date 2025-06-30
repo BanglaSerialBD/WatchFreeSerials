@@ -52,17 +52,65 @@
         @keyframes number-pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         #loading-text { color: var(--text-secondary); font-size: 16px; text-align: center; }
         #back-btn-bottom { width: 100%; max-width: 450px; margin-top: 20px; opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.6s forwards; }
+        
+        /* ⭐ CSS FOR THE NEW RESUME LOADER ⭐ */
+        #resume-loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 110;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(12, 12, 12, 0.85);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #resume-loader.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        #resume-loader .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--primary-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        #resume-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+        }
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
     </script>
 </head>
 <body>
+    <!-- ⭐ NEW RESUME LOADER UI ⭐ -->
+    <div id="resume-loader">
+        <div class="spinner"></div>
+        <button id="resume-btn" class="action-btn btn-primary">
+            <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6s-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8z"></path></svg>
+            <span data-translate-key="resumeButton"></span>
+        </button>
+    </div>
+
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container"><svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg><span id="countdown-number">10</span></div>
         <p id="loading-text" data-translate-key="loadingText"></p>
     </div>
+
     <div id="app-container">
+        <!-- ... (rest of the HTML is unchanged) ... -->
         <div id="player-wrapper">
             <video id="player" playsinline controls muted></video>
             <button id="center-play-pause-btn" class="action-btn" data-translate-aria-key="playPauseLabel"><svg id="center-play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="center-pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="center-play-pause-text"></span></button>
@@ -92,12 +140,11 @@
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
-        // ⭐ 1. TRANSLATION STORAGE ⭐
-        // Add more languages here. The key should be the language code (e.g., 'es' for Spanish).
         const translations = {
             'en': { // English
                 pageTitle: "WatchBanglaSerial",
                 loadingText: "Your video will start shortly...💕",
+                resumeButton: "Resume Loading",
                 playPauseLabel: "Play/Pause",
                 rotateLabel: "Toggle Rotation",
                 rotateText: "Rotate",
@@ -119,6 +166,7 @@
             'bn': { // Bengali
                 pageTitle: "বাংলা সিরিয়াল দেখুন",
                 loadingText: "আপনার ভিডিও শীঘ্রই শুরু হবে...💕",
+                resumeButton: "লোড পুনরায় শুরু করুন",
                 playPauseLabel: "চালান/থামান",
                 rotateLabel: "ঘোরানো টগল করুন",
                 rotateText: "ঘোরান",
@@ -140,6 +188,7 @@
             'hi': { // Hindi
                 pageTitle: "बांग्ला सीरियल देखें",
                 loadingText: "आपका वीडियो जल्द ही शुरू होगा...💕",
+                resumeButton: "लोडिंग फिर से शुरू करें",
                 playPauseLabel: "चलाएं/रोकें",
                 rotateLabel: "रोटेशन टॉगल करें",
                 rotateText: "घुमाएँ",
@@ -160,58 +209,18 @@
             }
         };
 
-        // ⭐ 2. LANGUAGE DETECTION & APPLICATION LOGIC ⭐
-        let currentLang = 'en'; // Default language
+        let currentLang = 'en';
+        function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; }
+        function applyTranslations(lang) { currentLang = lang; const dict = translations[lang] || translations['en']; document.documentElement.lang = lang; document.title = dict.pageTitle; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if (dict[key]) { el.textContent = dict[key]; } }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { const key = el.dataset.translateAriaKey; if (dict[key]) { el.setAttribute('aria-label', dict[key]); } }); }
+        function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
 
-        function getBestLanguage() {
-            const userLangs = navigator.languages || [navigator.language || 'en'];
-            for (const lang of userLangs) {
-                const baseLang = lang.split('-')[0];
-                if (translations[baseLang]) {
-                    return baseLang;
-                }
-            }
-            return 'en'; // Fallback to English
-        }
-
-        function applyTranslations(lang) {
-            currentLang = lang;
-            const dict = translations[lang] || translations['en'];
-
-            // Set page language and title
-            document.documentElement.lang = lang;
-            document.title = dict.pageTitle;
-
-            // Update all elements with data-translate-key
-            document.querySelectorAll('[data-translate-key]').forEach(el => {
-                const key = el.dataset.translateKey;
-                if (dict[key]) {
-                    el.textContent = dict[key];
-                }
-            });
-            
-            // Update all aria-labels with data-translate-aria-key
-             document.querySelectorAll('[data-translate-aria-key]').forEach(el => {
-                const key = el.dataset.translateAriaKey;
-                if (dict[key]) {
-                    el.setAttribute('aria-label', dict[key]);
-                }
-            });
-        }
-        
-        function getTranslatedString(key, replacements = {}) {
-            const dict = translations[currentLang] || translations['en'];
-            let text = dict[key] || key;
-            for (const placeholder in replacements) {
-                text = text.replace(`{${placeholder}}`, replacements[placeholder]);
-            }
-            return text;
-        }
-
-        // --- Original Script (with modifications) ---
+        // --- SCRIPT CONSTANTS & SELECTORS ---
         const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
-        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
+        
+        const resumeLoader = document.getElementById("resume-loader");
+        const resumeBtn = document.getElementById("resume-btn");
         const loaderScreen = document.getElementById("loader-screen");
         const countdownNumberEl = document.getElementById("countdown-number");
         const progressRing = document.getElementById("progress-ring-circle");
@@ -229,36 +238,24 @@
         const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
         const downloadButton = document.getElementById('download-app-btn');
         const player = new Plyr("#player", { autoplay: false, muted: true, controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'] });
+        
+        // --- SCRIPT STATE VARIABLES ---
         let activityTimer, autoRotateTimer, centerButtonTimer, countdownTimerInterval;
         let environment = 'desktop';
         let isFirstPlayAttempt = true;
+        let isPlayerReady = false; // ⭐ NEW: Tracks if the player has the video data and can play
+        let videoDataPromise; // ⭐ NEW: Will hold the promise for the video data fetch
+
         function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
         function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
         function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } }
         function updateCenterButtonVisibility() { clearTimeout(centerButtonTimer); centerPlayPauseBtn.classList.add('visible'); centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1500); }
         
-        // ⭐ MODIFIED to use translations
-        function syncAllPlayPauseButtons() { 
-            const isPaused = player.paused;
-            const playText = getTranslatedString('play');
-            const pauseText = getTranslatedString('pause');
-            const resumeText = getTranslatedString('resume');
-            
-            ['bottom', 'center'].forEach(key => { 
-                playIcons[key].classList.toggle('hidden', !isPaused); 
-                pauseIcons[key].classList.toggle('hidden', isPaused);
-                if (isFirstPlayAttempt) {
-                     playPauseTexts[key].textContent = playText;
-                } else {
-                     playPauseTexts[key].textContent = isPaused ? resumeText : pauseText;
-                }
-            });
-        }
+        function syncAllPlayPauseButtons() { const isPaused = player.paused; const playText = getTranslatedString('play'); const pauseText = getTranslatedString('pause'); const resumeText = getTranslatedString('resume'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); if (isFirstPlayAttempt) { playPauseTexts[key].textContent = playText; } else { playPauseTexts[key].textContent = isPaused ? resumeText : pauseText; } }); }
         function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
         
-        // ⭐ MODIFIED to use translations
         async function fetchVideoData(videoKeyword) {
             const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
             try {
@@ -278,16 +275,38 @@
             return new Promise(resolve => {
                 const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
                 countdownTimerInterval = setInterval(() => {
-                    count--; countdownNumberEl.textContent = count; const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS;
+                    count--; countdownNumberEl.textContent = count;
                     if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; resolve(); }
                 }, 1000);
             });
         }
+
         async function handleFirstPlay() {
-            if (!isFirstPlayAttempt) { player.togglePlay(); return; } isFirstPlayAttempt = false; if (player.muted) { player.muted = false; } loaderScreen.classList.remove('hidden');
-            const countdownPromise = startLoaderCountdown(); const videoReadyPromise = new Promise(resolve => player.once('canplay', resolve));
-            await Promise.race([countdownPromise, videoReadyPromise]); clearInterval(countdownTimerInterval); loaderScreen.classList.add('hidden'); player.play();
+            if (!isFirstPlayAttempt) { player.togglePlay(); return; } 
+            isFirstPlayAttempt = false; 
+            if (player.muted) { player.muted = false; } 
+            loaderScreen.classList.remove('hidden');
+            const countdownPromise = startLoaderCountdown(); 
+            const videoReadyPromise = new Promise(resolve => player.once('canplay', resolve));
+            await Promise.race([countdownPromise, videoReadyPromise]); 
+            clearInterval(countdownTimerInterval); 
+            loaderScreen.classList.add('hidden'); 
+            player.play();
         }
+        
+        // ⭐ NEW: This function sets the video source and is called automatically or by the resume button
+        async function initializePlayerSource() {
+            try {
+                // Wait for the video data which might already be fetching
+                const { videoUrl, posterUrl } = await videoDataPromise;
+                player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
+                // Autoplay muted. On mobile, this often requires the video to be unmuted by a user gesture later.
+                player.play();
+            } catch (error) {
+                document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: ${error.message}</p>`;
+            }
+        }
+
         function setupEventListeners() {
             const playerContainer = player.elements.container;
             playerContainer.addEventListener('mousemove', () => { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); });
@@ -296,28 +315,40 @@
             exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
             rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
             backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } });
-            player.on('enterfullscreen', handleEnterFullscreen);
-            player.on('exitfullscreen', handleExitFullscreen);
+            
+            // This is the main play button for unmuting and starting with countdown
             playPauseBtn.addEventListener('click', handleFirstPlay);
             centerPlayPauseBtn.addEventListener('click', () => { handleFirstPlay(); setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); });
+            
+            // ⭐ NEW: Event listener for the resume button
+            resumeBtn.addEventListener('click', () => {
+                resumeLoader.classList.remove('visible');
+                initializePlayerSource(); // Manually trigger loading
+            });
+
+            player.on('enterfullscreen', handleEnterFullscreen);
+            player.on('exitfullscreen', handleExitFullscreen);
             player.on('play', syncAllPlayPauseButtons);
             player.on('pause', syncAllPlayPauseButtons);
             player.on('ready', syncAllPlayPauseButtons);
+            
+            // ⭐ NEW: Key event to track when the player is ready
+            player.on('canplay', () => {
+                isPlayerReady = true;
+                resumeLoader.classList.remove('visible'); // Hide the loader if it was shown
+            });
         }
         function setupSmartDownloadButton() {
             const appIdentifier = 'BanglaSerial/1.0'; const currentUserAgent = navigator.userAgent;
             if (!currentUserAgent.includes(appIdentifier)) { downloadButton.classList.remove('hidden'); }
         }
         
-        // ⭐ MODIFIED Main function
         async function main() {
-            // Apply translations as the first step
             applyTranslations(getBestLanguage());
-
             environment = getEnvironment(); 
             setupEventListeners(); 
             setupSmartDownloadButton(); 
-            loaderScreen.classList.add('hidden');
+            loaderScreen.classList.add('hidden'); // The countdown loader is hidden initially
             
             const videoKeyword = sessionStorage.getItem('videoKeyword');
             if (!videoKeyword) { 
@@ -325,19 +356,22 @@
                 return; 
             }
             
-            // Use detected language for date formatting
+            // ⭐ CORE CHANGE: Start fetching video data immediately
+            videoDataPromise = fetchVideoData(videoKeyword);
+            
+            // ⭐ NEW: Set a timer to show the "Resume" button if loading is slow
+            setTimeout(() => {
+                if (!isPlayerReady) {
+                    resumeLoader.classList.add('visible');
+                }
+            }, 2500); // 2.5 second delay
+
             const today = new Date(); 
             const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            // Use translated string for the title
             videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`;
             
-            try {
-                const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword);
-                player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl };
-            } catch (error) { 
-                document.body.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">Error: ${error.message}</p>`;
-            }
+            // ⭐ NEW: Attempt to initialize the player automatically
+            initializePlayerSource();
         }
         main();
     </script>
