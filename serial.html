@@ -14,7 +14,16 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
     <style>
         /* --- CORE STYLES & THEME --- */
-        :root { --primary-accent: #00AFFF; --primary-accent-darker: #008fcc; --text-primary: #ffffff; --text-secondary: #bbbbbb; --bg-color: #0c0c0c; --bg-secondary-color: #1a1a1a; --border-color: rgba(255, 255, 255, 0.1); --retry-accent: #ff8c00; }
+        :root { 
+            --primary-accent: #00AFFF; 
+            --primary-accent-darker: #008fcc; 
+            --text-primary: #ffffff; 
+            --text-secondary: #bbbbbb; 
+            --bg-color: #0c0c0c; 
+            --bg-secondary-color: #1a1a1a; 
+            --border-color: rgba(255, 255, 255, 0.1); 
+            --retry-accent: #ffae42; /* Orange for retry */
+        }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow: hidden; color: var(--text-primary); }
         #app-container { display: flex; flex-direction: column; width: 100%; height: 100vh; }
         .content-container { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 16px 24px; box-sizing: border-box; overflow-y: auto; touch-action: pan-y; overscroll-behavior-y: contain; }
@@ -23,8 +32,6 @@
         /* --- VIDEO PLAYER & FULLSCREEN --- */
         #player-wrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; --plyr-color-main: var(--primary-accent); overflow: hidden; transition: all 0.3s ease-in-out; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         #player { width: 100%; height: 100%; object-fit: contain; }
-        #player-wrapper.simulated-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; max-width: none; border-radius: 0; z-index: 50; }
-        #player-wrapper.simulated-fullscreen.force-rotate { top: 50%; left: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); }
 
         /* --- INITIAL PLAY OVERLAY --- */
         #initial-play-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 51; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); transition: opacity 0.3s ease; }
@@ -42,37 +49,24 @@
         /* --- NEW: SHINY RELOAD BUTTON --- */
         #reload-container { display: flex; flex-direction: column; align-items: center; gap: 10px; position: absolute; opacity: 0; transform: scale(0.8); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
         #reload-container.visible { opacity: 1; transform: scale(1); pointer-events: all; }
-        #reload-btn { position: relative; width: 70px; height: 70px; background: var(--primary-accent); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s ease; }
+        #reload-btn { position: relative; width: 70px; height: 70px; background: var(--primary-accent); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; overflow: hidden; }
         #reload-btn:hover { transform: scale(1.1); }
-        #reload-btn svg { width: 36px; height: 36px; fill: white; }
-        #reload-btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: -1; animation: shiny-pulse 2s infinite ease-in-out; }
+        #reload-btn svg { width: 36px; height: 36px; fill: white; z-index: 2; }
+        #reload-btn::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(255,255,255,0.5), transparent 30%); animation: shiny-rotate 4s linear infinite; }
         #reload-text { font-size: 16px; font-weight: 600; color: var(--text-primary); }
-        @keyframes shiny-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } }
+        @keyframes shiny-rotate { to { transform: rotate(360deg); } }
 
         /* --- NEW: RETRY MODE LOADER --- */
         #spinner-loader-screen.retry-mode .spinner { border-top-color: var(--retry-accent); }
         #spinner-loader-screen.retry-mode #loader-countdown-text { color: var(--retry-accent); }
         #spinner-loader-screen.retry-mode #reload-btn { background-color: var(--retry-accent); }
-
-        /* --- UI & BUTTONS IMPROVEMENTS --- */
+        
+        /* --- VIDEO INFO & DESCRIPTION --- */
         @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 24px; font-size: 16px; font-weight: 600; color: var(--text-primary); border: none; border-radius: 12px; cursor: pointer; transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
-        .action-btn svg { width: 22px; height: 22px; fill: currentColor; }
-        .btn-primary { background-color: var(--primary-accent); }
-        .btn-primary:hover { background-color: var(--primary-accent-darker); }
-        .btn-secondary { background-color: var(--bg-secondary-color); border: 1px solid var(--border-color); }
-        .btn-secondary:hover { background-color: #2a2a2a; border-color: #444; }
-        #custom-controls-wrapper, #back-btn-bottom { opacity: 0; animation: slideUpFadeIn 0.5s ease-out forwards; }
-        #custom-controls-wrapper { animation-delay: 0.2s; }
-        #back-btn-bottom { animation-delay: 0.6s; }
-
-        /* --- VIDEO INFO & TITLE --- */
-        #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.4s forwards; }
+        #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; margin-top: 24px; text-align: center; background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.4s forwards; }
         #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 24px; margin: 0 0 10px 0; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
-
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
@@ -94,7 +88,7 @@
             <div id="initial-play-overlay">
                 <button id="initial-play-btn"><svg viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><span data-translate-key="clickToPlay"></span></button>
             </div>
-            <video id="player" playsinline controls muted></video>
+            <video id="player" playsinline muted></video>
         </div>
         <div class="content-container">
             <div id="video-info">
@@ -108,7 +102,7 @@
     <script>
         // --- 1. LANGUAGE TRANSLATIONS ---
         const translations = {
-            'en': { pageTitle: "WatchBanglaSerial", clickToPlay: "Click to Play Video", loadingText: "Please wait... Loading", enjoyWatching: "💕 Enjoy watching the Serial 💕", videoDescription: "Download the app to watch serials", reload: "Reload", todaysEpisode: "Today's Episode 📺", videoNotFound: 'Video not found for "{keyword}".', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected." },
+            'en': { pageTitle: "WatchBanglaSerial00035", clickToPlay: "Click to Play Video", loadingText: "Please wait... Loading", enjoyWatching: "💕 Enjoy watching the Serial 💕", videoDescription: "Download the app to watch serials", reload: "Reload", todaysEpisode: "Today's Episode 📺", videoNotFound: 'Video not found for "{keyword}".', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected." },
             'bn': { pageTitle: "বাংলা সিরিয়াল দেখুন", clickToPlay: "ভিডিও চালাতে ক্লিক করুন", loadingText: "অনুগ্রহ করে অপেক্ষা করুন...", enjoyWatching: "💕 সিরিয়াল দেখে উপভোগ করুন 💕", videoDescription: "নাটক দেখার অ্যাপটি Download করুণ", reload: "পুনরায় লোড করুন", todaysEpisode: "আজকের পর্ব 📺", videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।', networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।", noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।" },
             'hi': { pageTitle: "बांग्ला सीरियल देखें", clickToPlay: "वीडियो चलाने के लिए क्लिक करें", loadingText: "कृपया प्रतीक्षा करें...", enjoyWatching: "💕 सीरियल देखने का आनंद लें 💕", videoDescription: "सीरियल देखने के लिए ऐप डाउनलोड करें", reload: "पुनः लोड करें", todaysEpisode: "आज का एपिसोड 📺", videoNotFound: '"{keyword}" के लिए वीडियो नहीं मिला।', networkError: "वीडियो सूची लाने में नेटवर्क त्रुटि।", noVideoSelected: "त्रुटि: कोई वीडियो चयनित नहीं है।" },
             'ar': { pageTitle: "شاهد مسلسلات بنغالية", clickToPlay: "انقر لتشغيل الفيديو", loadingText: "يرجى الانتظار...", enjoyWatching: "💕 استمتع بمشاهدة المسلسل 💕", videoDescription: "قم بتنزيل التطبيق لمشاهدة المسلسلات", reload: "إعادة تحميل", todaysEpisode: "حلقة اليوم 📺", videoNotFound: 'لم يتم العثور على فيديو لـ "{keyword}".', networkError: "خطأ في الشبكة أثناء جلب قائمة الفيديو.", noVideoSelected: "خطأ: لم يتم تحديد فيديو।" },
@@ -116,26 +110,28 @@
             'ms': { pageTitle: "Tonton Siri Bangla", clickToPlay: "Klik untuk Main Video", loadingText: "Sila tunggu...", enjoyWatching: "💕 Selamat menonton Siri 💕", videoDescription: "Muat turun aplikasi untuk menonton siri", reload: "Muat Semula", todaysEpisode: "Episod Hari Ini 📺", videoNotFound: 'Video untuk "{keyword}" tidak ditemui.', networkError: "Ralat rangkaian semasa mengambil senarai video.", noVideoSelected: "Ralat: Tiada video dipilih." }
         };
 
-        // --- 2. LANGUAGE & CONFIGURATION ---
+        // --- 2. CONFIGURATION & STATE ---
         let currentLang = 'en';
         const APP_IDENTIFIER = 'BanglaSerial/1.0';
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
-        const COUNTDOWN_MAX = 100;
-        const RELOAD_APPEAR_SECONDS = 20;
+        const COUNTDOWN_MAX = 100; // Increased to 100 seconds
+        const RELOAD_APPEAR_SECONDS = 20; // Reload appears after this many seconds
 
-        // --- 3. ELEMENT SELECTORS & STATE ---
         const initialPlayOverlay = document.getElementById("initial-play-overlay");
         const spinnerLoaderScreen = document.getElementById("spinner-loader-screen");
         const loaderCountdownText = document.getElementById("loader-countdown-text");
         const reloadContainer = document.getElementById("reload-container");
         const videoTitleContainer = document.getElementById("video-title-container");
         const videoDescriptionEl = document.getElementById("video-description");
-        const player = new Plyr("#player");
+        
+        // Player is initialized with minimal controls. They get enabled after successful play.
+        const player = new Plyr("#player", { controls: [] });
+        
         let loaderTimerInterval;
         let isFirstPlayAttempt = true;
         let currentVideoSource = null;
 
-        // --- 4. CORE FUNCTIONS ---
+        // --- 3. CORE FUNCTIONS ---
         function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; }
         function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
         function applyTranslations(lang) { currentLang = lang; document.documentElement.lang = lang; document.title = getTranslatedString('pageTitle'); document.querySelectorAll('[data-translate-key]').forEach(el => { el.textContent = getTranslatedString(el.dataset.translateKey); }); }
@@ -155,17 +151,13 @@
             } catch (error) { sessionStorage.removeItem(cacheKey); sessionStorage.removeItem(timestampKey); throw error; }
         }
 
-        // --- 5. NEW PLAYBACK & LOADER LOGIC ---
+        // --- 4. NEW PLAYBACK & LOADER LOGIC ---
         function startLoader(isRetry = false) {
             clearInterval(loaderTimerInterval);
             spinnerLoaderScreen.classList.remove('hidden');
             reloadContainer.classList.remove('visible');
             
-            if (isRetry) {
-                spinnerLoaderScreen.classList.add('retry-mode');
-            } else {
-                spinnerLoaderScreen.classList.remove('retry-mode');
-            }
+            spinnerLoaderScreen.classList.toggle('retry-mode', isRetry);
 
             let count = 0;
             loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`;
@@ -198,12 +190,20 @@
 
         function handleReload() {
             if (currentVideoSource) {
-                player.source = { type: "video", sources: [{ src: currentVideoSource.videoUrl }], poster: currentVideoSource.posterUrl };
-                startLoader(true);
+                // Forcing a source reload might be needed for some browsers
+                player.source = { type: 'video', sources: [] }; // Clear first
+                setTimeout(() => {
+                    player.source = {
+                        type: "video",
+                        sources: [{ src: currentVideoSource.videoUrl }],
+                        poster: currentVideoSource.posterUrl
+                    };
+                    startLoader(true);
+                }, 100);
             }
         }
 
-        // --- 6. EVENT LISTENERS & INITIALIZATION ---
+        // --- 5. EVENT LISTENERS & INITIALIZATION ---
         function setupEventListeners() {
             document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay);
             document.getElementById('reload-btn').addEventListener('click', handleReload);
@@ -213,14 +213,14 @@
                     spinnerLoaderScreen.classList.add('hidden');
                     clearInterval(loaderTimerInterval);
                     isFirstPlayAttempt = false;
-                    player.controls = ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'];
+                    // Enable all the standard, reliable Plyr controls
+                    player.elements.controls.style.display = '';
                 }
             });
         }
         
         async function main() {
             applyTranslations(getBestLanguage());
-            setupEventListeners(); 
             
             // App-specific text logic
             if (navigator.userAgent.includes(APP_IDENTIFIER)) {
@@ -233,6 +233,10 @@
                 return; 
             }
             
+            // Hide Plyr controls by default, they will be shown on successful play
+            player.elements.controls.style.display = 'none';
+            setupEventListeners(); 
+
             const today = new Date(); 
             const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
             videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`;
