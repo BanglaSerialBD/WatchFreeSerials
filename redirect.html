@@ -1,42 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Redirecting...</title>
+    <title>Loading...</title>
     <style>
-        body { 
-            background-color: #0c0c0c; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #aaaaaa; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0;
-            text-align: center;
-        }
+        body { background-color: #0c0c0c; font-family: sans-serif; color: #f1f1f1; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
     </style>
 </head>
 <body>
-    <p>Loading your video...</p>
+    <p>Please wait, loading your video...</p>
     <script>
-        try {
-            // Get the encoded keyword from the URL hash
-            const encodedKeyword = window.location.hash.substring(1);
-            if (!encodedKeyword) {
-                throw new Error("No video specified.");
+        // This is the entire script for this page.
+        // It checks if there is a secret code in the URL's hash.
+        if (window.location.hash) {
+            try {
+                // Get the secret code from the URL (e.g., #UGFy...)
+                const hash = window.location.hash.substring(1);
+
+                // Decode it from Base64 into the real video keyword
+                const decodedKeyword = atob(hash);
+
+                // Store the keyword so the next page can find it
+                sessionStorage.setItem('videoKeyword', decodedKeyword);
+
+                // --- IMPORTANT ---
+                // Now, immediately redirect to the REAL player page.
+                // Make sure this path is correct for your GitHub project.
+                window.location.href = 'serial.html'; 
+
+            } catch (e) {
+                // If decoding fails, show an error.
+                document.body.innerHTML = 'Error: Invalid or corrupt link.';
             }
-            
-            // Decode the keyword from Base64
-            const videoKeyword = atob(encodedKeyword);
-            
-            // Store it in sessionStorage, which is private to this browser tab
-            sessionStorage.setItem('videoKeyword', videoKeyword);
-            
-            // Immediately redirect to your main player page: serial.html
-            window.location.replace('serial.html');
-            
-        } catch (e) {
-            document.body.innerHTML = `<p style="color:red;">Error: Could not load video. Please go back and try again.</p>`;
+        } else {
+            // If someone lands here with no secret code, show an error.
+            document.body.innerHTML = 'Error: No video link provided.';
         }
     </script>
 </body>
