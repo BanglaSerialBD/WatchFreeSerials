@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WatchBanglaSerial</title>
+    <title>WatchBanglaSerial0033</title>
     <link rel="preconnect" href="https://cdn.plyr.io">
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
@@ -49,7 +49,15 @@
         #countdown-number { position: absolute; font-size: 48px; font-weight: 700; color: var(--primary-accent); animation: number-pop 1s infinite; animation-timing-function: ease-in-out; }
         @keyframes number-pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         #loading-text { color: var(--text-secondary); font-size: 16px; text-align: center; }
-        #back-btn-bottom { width: 100%; max-width: 450px; margin-top: 20px; opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.6s forwards; }
+        
+        /* ⭐ CSS FOR THE NEW BACK BUTTON ⭐ */
+        #back-btn-bottom {
+            width: 100%;
+            max-width: 450px;
+            margin-top: 20px;
+            opacity: 0; /* Start hidden for animation */
+            animation: slideUpFadeIn 0.5s ease-out 0.6s forwards;
+        }
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
@@ -58,13 +66,14 @@
 <body>
     <div id="loader-screen" class="hidden">
         <div id="pie-timer-container"><svg id="pie-timer-svg" width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke="#f1f1f1" stroke-opacity="0.2"/><circle id="progress-ring-circle" class="progress-ring-circle" cx="75" cy="75" r="65" fill="transparent" stroke-width="10" stroke-linecap="round" stroke="var(--primary-accent)"/></svg><span id="countdown-number">10</span></div>
-        <p id="loading-.text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
+        <p id="loading-text">আপনার ভিডিও কিছুক্ষণের মধ্যে শুরু হবে...</p>
     </div>
     <div id="app-container">
         <div id="player-wrapper">
             <video id="player" playsinline controls muted></video>
             <button id="center-play-pause-btn" class="action-btn" aria-label="Play/Pause"><svg id="center-play-icon" viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><svg id="center-pause-icon" class="hidden" viewBox="0 0 24 24"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"></path></svg><span id="center-play-pause-text"></span></button>
             <div id="floating-buttons-container" class="hidden">
+                <!-- ⭐ BACK BUTTON REMOVED FROM HERE ⭐ -->
                 <button id="rotate-btn" class="action-btn floating-btn hidden" aria-label="Toggle Rotation"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-0.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,0.69,4.22,1.78L13,11h7V4L17.65,6.35z"></path></svg><span>Rotate</span></button>
                 <button id="exit-fullscreen-btn" class="action-btn floating-btn" aria-label="Exit Fullscreen"><svg viewBox="0 0 24 24"><path d="M5,16h3v3h2v-5H5V16z M8,8H5v2h5V5H8V8z M16,19h2v-3h3v-2h-5V19z M19,8h-3V5h-2v5h5V8z"></path></svg><span>Exit Fullscreen</span></button>
             </div>
@@ -75,6 +84,8 @@
                 <a id="download-app-btn" href="https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/main/BanglaSerial.apk" class="action-btn hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z" fill="currentColor"/></svg><span>নাটক দেখার অ্যাপ ডাউনলোড করুন</span></a>
             </div>
             <div id="video-info"><div id="video-title-container"></div><p id="video-description">নাটক দেখার অ্যাপটি Download করুণ </p></div>
+            
+            <!-- ⭐ NEW BACK BUTTON ADDED HERE ⭐ -->
             <button id="back-btn-bottom" class="action-btn btn-secondary">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
                 <span>Go Back</span>
@@ -84,9 +95,9 @@
     
     <script src="https://cdn.plyr.io/3.7.0/plyr.js"></script>
     <script>
+        // ⭐ HOMEPAGE URL UPDATED ⭐
         const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
-        // Make sure this is the correct published URL for your "Live_Dashboard" sheet.
-        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=341674418&single=true&output=csv";
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmoXqtgtdN3hyUR5W37-hc58bcAKQb7szLAaScIGOzKX54s8PGJriL4yGsGYbc9OAOqItVmHNewm9v/pub?gid=1555217981&single=true&output=csv";
         const COUNTDOWN_SECONDS = 10;
         const loaderScreen = document.getElementById("loader-screen");
         const countdownNumberEl = document.getElementById("countdown-number");
@@ -98,7 +109,7 @@
         const floatingButtonsContainer = document.getElementById("floating-buttons-container");
         const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn");
         const rotateBtn = document.getElementById("rotate-btn");
-        const backBtnBottom = document.getElementById("back-btn-bottom"); 
+        const backBtnBottom = document.getElementById("back-btn-bottom"); // ⭐ SELECTOR UPDATED
         const centerPlayPauseBtn = document.getElementById('center-play-pause-btn');
         const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") };
         const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") };
@@ -116,48 +127,22 @@
         function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
         function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
         function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-        
-        // ---------- FINAL, SIMPLIFIED fetchVideoData FUNCTION ----------
         async function fetchVideoData(videoKeyword) {
+            const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000;
             try {
-                // Always fetch a fresh copy. Do not use sessionStorage.
-                // Tell the browser this request cannot use its cache.
-                const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch video list from the network."); 
+                const cachedData = sessionStorage.getItem(cacheKey); const cachedTimestamp = sessionStorage.getItem(timestampKey); let csvText;
+                if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) { csvText = cachedData; } else {
+                    const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); if (!response.ok) throw new Error("Network error fetching video list"); csvText = await response.text(); sessionStorage.setItem(cacheKey, csvText); sessionStorage.setItem(timestampKey, String(Date.now()));
                 }
-
-                const csvText = await response.text();
-                
-                // This is the robust lookup that handles invisible characters.
-                const targetKeyword = videoKeyword.trim().toLowerCase();
-                const videoRow = csvText
-                    .split(/\r?\n/) // Robustly split all kinds of newlines
-                    .map(line => line.split(","))
-                    .find(row => {
-                        if (!row || !row[0]) return false;
-                        const csvKeyword = row[0].replace(/\r/g, '').trim().toLowerCase();
-                        return csvKeyword === targetKeyword;
-                    });
-
-                if (videoRow && videoRow[1]) { 
-                    return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; 
-                } 
-                
-                // If the loop finishes and no match is found, throw an error.
-                throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
-            } catch (error) { 
-                // Pass any error (network or lookup) along to the main function to be displayed.
-                throw new Error(error.message); 
-            }
+                const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase());
+                if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } throw new Error(`"${videoKeyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।`);
+            } catch (error) { sessionStorage.removeItem(cacheKey); sessionStorage.removeItem(timestampKey); throw new Error(error.message); }
         }
-
         function startLoaderCountdown() {
             return new Promise(resolve => {
                 const radius = progressRing.r.baseVal.value; const circumference = 2 * Math.PI * radius; progressRing.style.strokeDasharray = `${circumference} ${circumference}`; progressRing.style.strokeDashoffset = circumference; let count = COUNTDOWN_SECONDS; countdownNumberEl.textContent = count; progressRing.style.strokeDashoffset = circumference - (1 / COUNTDOWN_SECONDS) * circumference;
                 countdownTimerInterval = setInterval(() => {
                     count--; countdownNumberEl.textContent = count; const progress = (COUNTDOWN_SECONDS - count) / COUNTDOWN_SECONDS; const offset = circumference - progress * circumference;
-                    progressRing.style.strokeDashoffset = offset;
                     if (count <= 0) { clearInterval(countdownTimerInterval); countdownNumberEl.textContent = "▶"; countdownNumberEl.style.animation = 'none'; countdownNumberEl.style.transform = 'scale(0.8)'; resolve(); }
                 }, 1000);
             });
@@ -174,7 +159,16 @@
             fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handleFirstPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
             exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
             rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
-            backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } });
+            
+            // ⭐ EVENT LISTENER UPDATED FOR THE NEW BUTTON ⭐
+            backBtnBottom.addEventListener('click', () => {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = HOMEPAGE_URL;
+                }
+            });
+
             player.on('enterfullscreen', handleEnterFullscreen);
             player.on('exitfullscreen', handleExitFullscreen);
             playPauseBtn.addEventListener('click', handleFirstPlay);
@@ -202,3 +196,7 @@
     </script>
 </body>
 </html>
+
+
+
+
