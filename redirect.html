@@ -9,30 +9,33 @@
 <body>
     <p>Please wait, loading your video...</p>
     <script>
-        // This is the entire script for this page.
-        // It checks if there is a secret code in the URL's hash.
         if (window.location.hash) {
             try {
-                // Get the secret code from the URL (e.g., #UGFy...)
+                // 1. Get the secret code from the URL (e.g., #UGFy...)
                 const hash = window.location.hash.substring(1);
 
-                // Decode it from Base64 into the real video keyword
+                // 2. Decode it from Base64 into the real video keyword
                 const decodedKeyword = atob(hash);
 
-                // Store the keyword so the next page can find it
+                // 3. Store the REAL keyword so the next page can find it securely
                 sessionStorage.setItem('videoKeyword', decodedKeyword);
 
-                // --- IMPORTANT ---
-                // Now, immediately redirect to the REAL player page.
-                // Make sure this path is correct for your GitHub project.
-                window.location.href = 'serial.html'; 
+                // 4. Create a clean, URL-friendly "slug" from the keyword for analytics
+                // Example: "Parashuram Ajker Nayok" becomes "parashuram-ajker-nayok"
+                const videoSlug = decodedKeyword
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+                    .replace(/\s+/g, '-');      // Replace spaces with hyphens
+
+                // 5. Redirect to the player page with the clean slug in the URL
+                // This is what Microsoft Clarity will see
+                window.location.href = 'serial.html?name=' + videoSlug; 
 
             } catch (e) {
-                // If decoding fails, show an error.
                 document.body.innerHTML = 'Error: Invalid or corrupt link.';
             }
         } else {
-            // If someone lands here with no secret code, show an error.
             document.body.innerHTML = 'Error: No video link provided.';
         }
     </script>
