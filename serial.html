@@ -418,16 +418,34 @@
                 postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, userID: USER_ID, username: 'Anonymous', commentText: text });
             });
 
-            videoReactionBar.addEventListener('click', (e) => {
-                const reactionBtn = e.target.closest('.reaction-btn');
-                if (!reactionBtn || reactionBtn.disabled) return;
-                const id = reactionBtn.dataset.id;
-                const reactionType = reactionBtn.dataset.reactionType;
-                localStorage.setItem(`reacted-${id}`, reactionType);
-                reactionBtn.classList.add('popping');
-                renderDisplayedComments(); // Re-render to show updated "reacted" state
-                postData({ action: 'addReaction', commentID: id, reactionType: reactionType });
-            });
+            // FIND THIS EVENT LISTENER IN YOUR CODE
+videoReactionBar.addEventListener('click', (e) => {
+    const reactionBtn = e.target.closest('.reaction-btn');
+    if (!reactionBtn || reactionBtn.disabled) return;
+    
+    const id = reactionBtn.dataset.id;
+    const reactionType = reactionBtn.dataset.reactionType;
+    
+    localStorage.setItem(`reacted-${id}`, reactionType);
+    
+    // --- THIS IS THE FIX ---
+    // Optimistically update the count immediately
+    const countSpan = reactionBtn.querySelector('.count');
+    countSpan.textContent = parseInt(countSpan.textContent) + 1;
+    // --- END OF FIX ---
+    
+    reactionBtn.classList.add('popping', 'reacted');
+    
+    // Disable all buttons in the bar to prevent multiple reactions
+    videoReactionBar.querySelectorAll('.reaction-btn').forEach(btn => { 
+        btn.disabled = true; 
+        if(btn.dataset.reactionType !== reactionType) {
+             btn.style.filter = 'saturate(0)'; // Visually grey out non-selected ones
+        }
+    });
+
+    postData({ action: 'addReaction', commentID: id, reactionType: reactionType });
+});
 
             loadMoreBtn.addEventListener('click', () => {
                 displayedCommentsCount = Math.min(allRootComments.length, displayedCommentsCount + LOAD_MORE_COUNT);
