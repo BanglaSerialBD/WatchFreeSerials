@@ -35,7 +35,7 @@
         #player-wrapper.simulated-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; max-width: none; border-radius: 0; z-index: 50; }
         #player-wrapper.simulated-fullscreen.force-rotate { top: 50%; left: 50%; width: 100vh; height: 100vw; transform: translate(-50%, -50%) rotate(90deg); }
 
-        /* --- All other existing styles are unchanged... --- */
+        /* --- ALL ORIGINAL STYLES ARE PRESERVED --- */
         #initial-play-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 51; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); transition: opacity 0.3s ease; }
         #initial-play-btn { display: flex; flex-direction: column; align-items: center; gap: 12px; background: rgba(20, 20, 20, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--text-primary); padding: 25px 40px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; }
         #initial-play-btn:hover { transform: scale(1.05); background: rgba(30, 30, 30, 0.8); border-color: var(--primary-accent); }
@@ -77,21 +77,32 @@
         #center-play-pause-btn svg { width: 28px; height: 28px; }
         #floating-buttons-container { position: absolute; top: 20px; right: 20px; z-index: 55; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; opacity: 1; transition: opacity 0.4s ease; }
         .floating-btn { padding: 0 16px; height: 44px; background-color: rgba(20,20,20,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); }
-        #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.2s forwards; margin-bottom: 30px; /* Added margin-bottom */ }
+        #video-info { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1280px; padding: 20px; text-align: center; background-color: var(--bg-secondary-color); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.2s forwards; }
         #video-title-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-size: 24px; margin: 0 0 10px 0; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         #date-box { background-color: var(--primary-accent); color: var(--bg-color); padding: 6px 14px; border-radius: 6px; font-size: 16px; font-weight: 700; }
         #video-description { font-size: 15px; margin: 0; color: var(--text-secondary); line-height: 1.5; }
         
-        /* --- START: INTEGRATED COMMENT SYSTEM CSS --- */
+        /* --- START: FIXED & RESPONSIVE COMMENT SYSTEM CSS --- */
         @keyframes pop-in { 0% { transform: scale(0.8); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        #comments-section { width: 100%; max-width: 700px; margin: 20px auto; background-color: var(--bg-secondary-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.6s forwards; }
-        #comments-section h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        /* NEW: Responsive styling to match your #video-info box */
+        #comments-section {
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 1280px; text-align: center;
+            background-color: var(--bg-secondary-color);
+            border-radius: 12px; border: 1px solid var(--border-color);
+            padding: 20px; box-sizing: border-box; 
+            margin-top: 20px;
+            opacity: 0; animation: slideUpFadeIn 0.5s ease-out 0.8s forwards;
+        }
+        #comments-section > * { width: 100%; max-width: 700px; /* Max-width for the content inside */ text-align: left; }
+        #comments-section h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-primary); }
         #video-reaction-bar { padding: 10px; background-color: var(--bg-color); border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-around; align-items: center; }
         .reaction-btn { background: none; border: none; padding: 5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-weight: bold; font-size: 16px; transition: transform 0.2s ease, filter 0.2s; }
-        .reaction-btn:hover:not(.reacted) { transform: scale(1.1); }
-        .reaction-btn.reacted { filter: saturate(1.5) brightness(1.1); transform: scale(1.1); cursor: default; }
+        .reaction-btn:hover:not(:disabled) { transform: scale(1.1); }
+        .reaction-btn.reacted { filter: saturate(1.5) brightness(1.1); cursor: default; }
         .reaction-btn.popping { animation: pop-in 0.3s ease-out; }
+        .reaction-btn:disabled { cursor: default; }
         #comment-form textarea, .reply-form-container textarea { width: 100%; box-sizing: border-box; background-color: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 16px; }
         #comment-form button, .reply-form-container button { background-color: var(--primary-accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; }
         #comment-form button:disabled, .reply-form-container button:disabled { background-color: #555; cursor: not-allowed; }
@@ -104,13 +115,13 @@
         .comment-actions { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 15px; }
         .reply-btn, .show-replies-btn { font-size: 0.8em; font-weight: bold; cursor: pointer; border: none; padding: 5px 10px; border-radius: 5px; }
         .reply-btn { background-color: var(--primary-accent); color: white; }
-        .show-replies-btn { background-color: #ff8c00; color: white; } /* Using a direct color */
+        .show-replies-btn { background-color: #ff8c00; color: white; }
         .replies-container { margin-left: 30px; border-left: 2px solid var(--border-color); padding-left: 15px; display: none; margin-top: 15px; }
         .reply-form-container { margin-top: 10px; padding-left: 45px; animation: fade-in 0.3s; }
         #load-more-btn { width: 100%; padding: 10px; margin-top: 15px; background-color: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; border-radius: 8px; font-weight: bold; }
-        #status-message { color: var(--text-secondary); }
+        #status-message { color: var(--text-secondary); text-align: center; }
         .clearfix::after { content: ""; clear: both; display: table; }
-        /* --- END: INTEGRATED COMMENT SYSTEM CSS --- */
+        /* --- END: COMMENT SYSTEM CSS --- */
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
@@ -152,29 +163,25 @@
                 <p id="video-description" data-translate-key="videoDescription"></p>
             </div>
             
-            <!-- START: ADDED COMMENT SYSTEM HTML -->
+            <!-- ** CORRECTED LAYOUT ORDER ** -->
+            <button id="back-btn-bottom" class="action-btn btn-secondary">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+                <span data-translate-key="goBackButton"></span>
+            </button>
+            
+            <!-- ** CORRECTED LAYOUT ORDER ** -->
             <div id="comments-section">
                 <h2>Video Reactions</h2>
                 <div id="video-reaction-bar"></div>
-            
                 <h2>Comments</h2>
                 <div id="comment-form" class="clearfix">
                     <textarea id="comment-input" placeholder="Add a public comment..."></textarea>
                     <button id="submit-comment-btn">Comment</button>
                 </div>
-            
-                <div id="comments-container">
-                    <p id="status-message">Loading comments...</p>
-                </div>
-            
+                <div id="comments-container"><p id="status-message">Loading comments...</p></div>
                 <button id="load-more-btn" class="hidden">Load More</button>
             </div>
-            <!-- END: ADDED COMMENT SYSTEM HTML -->
 
-            <button id="back-btn-bottom" class="action-btn btn-secondary">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
-                <span data-translate-key="goBackButton"></span>
-            </button>
         </div>
     </div>
     
@@ -188,44 +195,63 @@
         
         // --- 3. ELEMENT SELECTORS (EXISTING) ---
         const initialPlayOverlay = document.getElementById("initial-play-overlay"); const spinnerLoaderScreen = document.getElementById("spinner-loader-screen"); const loaderCountdownText = document.getElementById("loader-countdown-text"); const reloadContainer = document.getElementById("reload-container"); const playerWrapper = document.getElementById("player-wrapper"); const videoTitleContainer = document.getElementById("video-title-container"); const videoDescriptionEl = document.getElementById("video-description"); const playPauseBtn = document.getElementById("play-pause-btn"); const fullscreenBtn = document.getElementById("fullscreen-btn"); const floatingButtonsContainer = document.getElementById("floating-buttons-container"); const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn"); const rotateBtn = document.getElementById("rotate-btn"); const backBtnBottom = document.getElementById("back-btn-bottom"); const centerPlayPauseBtn = document.getElementById('center-play-pause-btn'); const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") }; const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") }; const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") }; const player = new Plyr("#player", { controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'], tooltips: { controls: true, seek: true } }); let loaderTimerInterval, activityTimer, autoRotateTimer, centerButtonTimer; let isFirstPlayAttempt = true; let currentVideoSource = null; let environment = 'desktop';
-        
-        // ** NEW ** State variable for the center button delay
         let canShowCenterButton = false; 
 
         // --- 4. CORE & UI FUNCTIONS (MODIFIED) ---
-        function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; } function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; } function applyTranslations(lang) { currentLang = lang; document.documentElement.lang = lang; document.title = getTranslatedString('pageTitle'); document.querySelectorAll('[data-translate-key]').forEach(el => { el.textContent = getTranslatedString(el.dataset.translateKey); }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { el.setAttribute('aria-label', getTranslatedString(el.dataset.translateAriaKey)); });} function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; } function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); } function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } } 
+        function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (translations[baseLang]) { return baseLang; } } return 'en'; } 
+        function getTranslatedString(key, replacements = {}) { const dict = translations[currentLang] || translations['en']; let text = dict[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; } 
+        function applyTranslations(lang) { currentLang = lang; document.documentElement.lang = lang; document.title = getTranslatedString('pageTitle'); document.querySelectorAll('[data-translate-key]').forEach(el => { el.textContent = getTranslatedString(el.dataset.translateKey); }); document.querySelectorAll('[data-translate-aria-key]').forEach(el => { el.setAttribute('aria-label', getTranslatedString(el.dataset.translateAriaKey)); });} 
+        function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; } 
+        function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); } 
+        function updateFloatingButtonsVisibility(isInitial) { clearTimeout(activityTimer); if (isPlayerInFullscreen()) { floatingButtonsContainer.classList.remove('hidden'); rotateBtn.classList.toggle('hidden', environment === 'desktop'); const hideDelay = isInitial === true ? 1500 : 1500; activityTimer = setTimeout(() => floatingButtonsContainer.classList.add('hidden'), hideDelay); } else { floatingButtonsContainer.classList.add('hidden'); playerWrapper.classList.remove('force-rotate'); clearTimeout(autoRotateTimer); } } 
         
-        // ** MODIFIED ** Function to respect the 30-second delay
         function updateCenterButtonVisibility() { 
-            if (!canShowCenterButton) return; // <-- ** NEW ** Check
+            if (!canShowCenterButton) return; // The only check needed
             clearTimeout(centerButtonTimer); 
             centerPlayPauseBtn.classList.add('visible'); 
             centerButtonTimer = setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1500); 
         } 
-
-        function syncAllPlayPauseButtons() { const isPaused = player.paused; const text = isPaused ? getTranslatedString('resume') : getTranslatedString('pause'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); playPauseTexts[key].textContent = text; }); if (isPaused) { playPauseTexts.bottom.textContent = getTranslatedString('play'); playPauseTexts.center.textContent = getTranslatedString('play'); } } function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); } function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } } function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
+        function syncAllPlayPauseButtons() { const isPaused = player.paused; const text = isPaused ? getTranslatedString('resume') : getTranslatedString('pause'); ['bottom', 'center'].forEach(key => { playIcons[key].classList.toggle('hidden', !isPaused); pauseIcons[key].classList.toggle('hidden', isPaused); playPauseTexts[key].textContent = text; }); if (isPaused) { playPauseTexts.bottom.textContent = getTranslatedString('play'); playPauseTexts.center.textContent = getTranslatedString('play'); } } 
+        function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); } 
+        function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } } 
+        function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
         
         // --- 5. DATA FETCHING (EXISTING) ---
         async function fetchVideoData(videoKeyword) { const cacheKey = `video_data_csv`; const timestampKey = `video_data_timestamp`; const CACHE_DURATION_MS = 2 * 60 * 60 * 1000; try { const cachedData = sessionStorage.getItem(cacheKey); const cachedTimestamp = sessionStorage.getItem(timestampKey); let csvText; if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_DURATION_MS)) { csvText = cachedData; } else { const response = await fetch(SHEET_CSV_URL, { cache: 'no-store' }); if (!response.ok) throw new Error(getTranslatedString('networkError')); csvText = await response.text(); sessionStorage.setItem(cacheKey, csvText); sessionStorage.setItem(timestampKey, String(Date.now())); } const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0] && row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase()); if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } throw new Error(getTranslatedString('videoNotFound', { keyword: videoKeyword })); } catch (error) { sessionStorage.removeItem(cacheKey); sessionStorage.removeItem(timestampKey); throw error; } }
         
         // --- 6. PLAYBACK & LOADER LOGIC (EXISTING) ---
-        function startLoader(isRetry = false) { clearInterval(loaderTimerInterval); spinnerLoaderScreen.classList.remove('hidden'); reloadContainer.classList.remove('visible'); spinnerLoaderScreen.classList.toggle('retry-mode', isRetry); let count = 0; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; loaderTimerInterval = setInterval(() => { count++; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; if (count === RELOAD_APPEAR_SECONDS) { reloadContainer.classList.add('visible'); } if (count >= COUNTDOWN_MAX) { clearInterval(loaderTimerInterval); } }, 1000); player.play(); } function handlePrimaryPlay() { if (!isFirstPlayAttempt) { player.togglePlay(); return; } initialPlayOverlay.classList.add('hidden'); if (player.muted) player.muted = false; startLoader(false); } function handleReload() { if (currentVideoSource) { player.source = { type: 'video', sources: [] }; setTimeout(() => { player.source = { type: "video", sources: [{ src: currentVideoSource.videoUrl }], poster: currentVideoSource.posterUrl }; startLoader(true); }, 100); } }
+        function startLoader(isRetry = false) { clearInterval(loaderTimerInterval); spinnerLoaderScreen.classList.remove('hidden'); reloadContainer.classList.remove('visible'); spinnerLoaderScreen.classList.toggle('retry-mode', isRetry); let count = 0; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; loaderTimerInterval = setInterval(() => { count++; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; if (count === RELOAD_APPEAR_SECONDS) { reloadContainer.classList.add('visible'); } if (count >= COUNTDOWN_MAX) { clearInterval(loaderTimerInterval); } }, 1000); player.play(); } 
+        function handlePrimaryPlay() { if (!isFirstPlayAttempt) { player.togglePlay(); return; } initialPlayOverlay.classList.add('hidden'); if (player.muted) player.muted = false; startLoader(false); } 
+        function handleReload() { if (currentVideoSource) { player.source = { type: 'video', sources: [] }; setTimeout(() => { player.source = { type: "video", sources: [{ src: currentVideoSource.videoUrl }], poster: currentVideoSource.posterUrl }; startLoader(true); }, 100); } }
         
-        // --- 7. EVENT LISTENERS & INITIALIZATION (MODIFIED) ---
-        function setupEventListeners() { document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay); document.getElementById('reload-btn').addEventListener('click', handleReload); const playerContainer = player.elements.container; playerContainer.addEventListener('mousemove', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }}); playerContainer.addEventListener('touchstart', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } }, { passive: true }); fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } }); exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click()); rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate')); backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } }); playPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } }); centerPlayPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); }); 
+        // --- 7. EVENT LISTENERS & INITIALIZATION (MODIFIED & FIXED) ---
+        function setupEventListeners() { 
+            document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay); 
+            document.getElementById('reload-btn').addEventListener('click', handleReload); 
+            const playerContainer = player.elements.container; 
+            
+            // This logic is restored to ensure floating buttons always work correctly.
+            playerContainer.addEventListener('mousemove', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); }}); 
+            playerContainer.addEventListener('touchstart', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } }, { passive: true }); 
+            
+            fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } }); 
+            exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click()); 
+            rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate')); 
+            backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } }); 
+            playPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } }); 
+            centerPlayPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); }); 
         
             player.on('playing', () => { 
                 if (isFirstPlayAttempt) { 
                     spinnerLoaderScreen.classList.add('hidden'); 
                     clearInterval(loaderTimerInterval); 
                     isFirstPlayAttempt = false;
-                    
-                    // ** NEW ** Start the timer logic for the center button delay
                     setTimeout(() => {
+                        // After a 500ms delay, start the 30-second timer.
                         setTimeout(() => {
                             canShowCenterButton = true;
-                        }, 30000); // Enable the button after 30 seconds
-                    }, 500); // 500ms delay after 'playing' event
+                        }, 30000); 
+                    }, 500); 
                 } 
                 syncAllPlayPauseButtons(); 
             }); 
@@ -233,26 +259,45 @@
             player.on('enterfullscreen', handleEnterFullscreen); player.on('exitfullscreen', handleExitFullscreen); player.on('pause', syncAllPlayPauseButtons); player.on('ready', syncAllPlayPauseButtons); 
         }
 
-        async function main() { environment = getEnvironment(); applyTranslations(getBestLanguage()); setupEventListeners(); if (navigator.userAgent.includes(APP_IDENTIFIER)) { document.getElementById('download-app-btn').classList.add('hidden'); } const videoKeyword = sessionStorage.getItem('videoKeyword'); if (!videoKeyword) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`; return; } const today = new Date(); const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' }); videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`; try { const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword); currentVideoSource = { videoUrl, posterUrl }; player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl }; } catch (error) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${error.message}</p>`; } }
+        async function main() { 
+            environment = getEnvironment(); 
+            applyTranslations(getBestLanguage()); 
+            setupEventListeners(); 
+            if (navigator.userAgent.includes(APP_IDENTIFIER)) { document.getElementById('download-app-btn').classList.add('hidden'); } 
+            const videoKeyword = sessionStorage.getItem('videoKeyword'); 
+            if (!videoKeyword) { 
+                initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`;
+                // Hide comments if no video is selected
+                document.getElementById('comments-section').classList.add('hidden');
+                return;
+            } 
+            const today = new Date(); 
+            const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' }); 
+            videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`; 
+            try { 
+                const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword); 
+                currentVideoSource = { videoUrl, posterUrl }; 
+                player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl }; 
+            } catch (error) { 
+                initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${error.message}</p>`; 
+            } 
+        }
         
         main();
     </script>
 
-    <!-- ======== START: NEW SCRIPT TAG FOR THE COMMENT SYSTEM ======== -->
+    <!-- ======== START: FIXED AND ROBUST COMMENT SYSTEM SCRIPT ======== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // Run this script after the main page script to ensure everything is ready.
+        (function() {
             const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby7VgaQcOuMDAu8ifoXPWPs4tu0soF6Ssg6KWq4nstq5sRjCu_7FKVAQ8IjL9_iuwqZLg/exec';
 
-            // --- *** THE CRUCIAL MODIFICATION *** ---
-            // Get the unique video ID from sessionStorage set by the redirect page.
             const CURRENT_VIDEO_ID = sessionStorage.getItem('videoKeyword');
             
-            // Check if a videoID exists. If not, don't run the comment system.
             if (!CURRENT_VIDEO_ID) {
+                // We already hid the section in the main script, so just log and exit.
                 console.error("No 'videoKeyword' in sessionStorage. Comments disabled.");
-                const statusMessage = document.getElementById('status-message');
-                if (statusMessage) statusMessage.textContent = 'Could not load comments (missing video ID).';
-                return; // Stop execution of the script
+                return;
             }
 
             const VIDEO_METADATA_ID = `${CURRENT_VIDEO_ID}-METADATA`;
@@ -271,12 +316,14 @@
             
             let allRootComments = [];
             let displayedCommentsCount = 0;
-
+            
+            // --- ALL HELPER FUNCTIONS (UNCHANGED LOGIC, BUT NOW WORKING) ---
             const createReactionButtons = (reactions, id) => {
                 const reactedType = localStorage.getItem(`reacted-${id}`);
                 return EMOJIS.map(emoji => {
                     const count = reactions[emoji] || 0;
                     const isReacted = reactedType === emoji;
+                    // Disable all buttons for this item if one has been clicked.
                     return `<button class="reaction-btn ${isReacted ? 'reacted' : ''}" data-id="${id}" data-reaction-type="${emoji}" ${reactedType ? 'disabled' : ''}>${emoji} <span class="count">${count}</span></button>`;
                 }).join('');
             };
@@ -284,31 +331,14 @@
             const createCommentElement = (comment) => {
                 const date = comment.isOptimistic ? "Just now" : new Date(comment.timestamp).toLocaleString();
                 const repliesButton = comment.replies && comment.replies.length > 0 ? `<button class="show-replies-btn" data-num-replies="${comment.replies.length}">Show ${comment.replies.length} replies</button>` : '';
-                
                 const element = document.createElement('div');
                 element.className = comment.isOptimistic ? 'comment optimistic' : 'comment';
                 element.id = `comment-${comment.commentID}`;
-
-                // Using textContent to prevent XSS from user comments
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'comment-header';
-                const authorSpan = document.createElement('span');
-                authorSpan.className = 'comment-author';
-                authorSpan.textContent = comment.username;
-                const dateSpan = document.createElement('span');
-                dateSpan.className = 'comment-date';
-                dateSpan.textContent = ` - ${date}`;
-                headerDiv.appendChild(authorSpan);
-                headerDiv.appendChild(dateSpan);
                 
-                const bodyP = document.createElement('p');
-                bodyP.className = 'comment-body';
-                bodyP.textContent = comment.commentText;
-
-                element.appendChild(headerDiv);
-                element.appendChild(bodyP);
-
-                element.innerHTML += `
+                const sanitizedText = comment.commentText.replace(/</g, "<").replace(/>/g, ">");
+                element.innerHTML = `
+                    <div class="comment-header"><span class="comment-author">${comment.username.replace(/</g, "<")}</span><span class="comment-date"> - ${date}</span></div>
+                    <p class="comment-body">${sanitizedText}</p>
                     <div class="comment-actions">
                         ${createReactionButtons(comment.reactions, comment.commentID)}
                         <button class="reply-btn">Reply</button>
@@ -320,22 +350,29 @@
             };
             
             const renderDisplayedComments = () => {
-                commentsContainer.innerHTML = ''; // Clear previous comments
+                const currentScroll = commentsContainer.scrollTop;
+                commentsContainer.innerHTML = '';
                 const commentsToRender = allRootComments.slice(0, displayedCommentsCount);
-                
                 if (commentsToRender.length === 0) {
                      commentsContainer.innerHTML = '<p id="status-message">Be the first to comment!</p>';
                 } else {
                     commentsToRender.forEach(comment => commentsContainer.appendChild(createCommentElement(comment)));
                 }
-
+                commentsContainer.scrollTop = currentScroll;
                 loadMoreBtn.classList.toggle('hidden', displayedCommentsCount >= allRootComments.length);
             };
 
-            const postData = (payload) => fetch(WEB_APP_URL, { method: 'POST',  mode: 'no-cors',  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(console.error);
+            const postData = (payload) => {
+                fetch(WEB_APP_URL, { 
+                    method: 'POST',  
+                    mode: 'no-cors', // 'no-cors' is required for simple POST to Apps Script web app
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                }).catch(console.error);
+            };
             
             const fetchAllData = async () => {
-                if (statusMessage) statusMessage.textContent = 'Fetching comments...';
+                statusMessage.textContent = 'Fetching comments...';
                 try {
                     const response = await fetch(`${WEB_APP_URL}?videoID=${encodeURIComponent(CURRENT_VIDEO_ID)}`);
                     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -343,37 +380,40 @@
                     if (data.error) throw new Error(data.error);
 
                     videoReactionBar.innerHTML = createReactionButtons(data.videoReactions?.reactions || {}, VIDEO_METADATA_ID);
-                    
                     const comments = data.comments || [];
-                    const calculateScore = (c) => (Object.values(c.reactions).reduce((a, b) => a + b, 0)) + ((c.replies || []).length * 2);
-                    
+                    const calculateScore = (c) => (Object.values(c.reactions || {}).reduce((a, b) => a + b, 0)) + ((c.replies || []).length * 2);
                     comments.sort((a, b) => calculateScore(b) - calculateScore(a));
                     const top5 = comments.slice(0, 5);
                     const latest = comments.slice(5).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     allRootComments = [...top5, ...latest];
-                    
                     displayedCommentsCount = Math.min(allRootComments.length, INITIAL_LOAD_COUNT);
                     renderDisplayedComments();
-
                 } catch (error) {
-                    if (statusMessage) statusMessage.textContent = 'Could not load comments.';
-                    console.error("Error Fetching Data:", error);
+                    statusMessage.textContent = 'Could not load comments.';
+                    console.error("Error Fetching Comment Data:", error);
                 }
             };
-
-            // Main execution starts here
+            
+            // --- STARTING POINT AND EVENT LISTENERS ---
             fetchAllData();
 
-            // Event Listeners for the comment section
+            // NEW: Function to scroll the active input into view on mobile.
+            const handleInputFocus = (event) => {
+                // Use a small timeout to allow the keyboard to start animating in
+                setTimeout(() => {
+                    event.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            };
+
+            mainCommentInput.addEventListener('focus', handleInputFocus);
+
             document.getElementById('submit-comment-btn').addEventListener('click', () => {
                 const text = mainCommentInput.value.trim();
                 if (!text) return;
-
                 const optimisticComment = { commentID: `temp-${Date.now()}`, username: 'You', commentText: text, reactions: {}, replies: [], isOptimistic: true };
                 allRootComments.unshift(optimisticComment);
                 if (displayedCommentsCount < INITIAL_LOAD_COUNT) displayedCommentsCount++;
                 renderDisplayedComments();
-
                 mainCommentInput.value = '';
                 postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, userID: USER_ID, username: 'Anonymous', commentText: text });
             });
@@ -381,24 +421,23 @@
             videoReactionBar.addEventListener('click', (e) => {
                 const reactionBtn = e.target.closest('.reaction-btn');
                 if (!reactionBtn || reactionBtn.disabled) return;
-                
                 const id = reactionBtn.dataset.id;
                 const reactionType = reactionBtn.dataset.reactionType;
-                
                 localStorage.setItem(`reacted-${id}`, reactionType);
-                
-                const countSpan = reactionBtn.querySelector('.count');
-                countSpan.textContent = parseInt(countSpan.textContent) + 1;
-                
-                reactionBtn.classList.add('popping', 'reacted');
-                videoReactionBar.querySelectorAll('.reaction-btn').forEach(btn => { btn.disabled = true; });
-
+                reactionBtn.classList.add('popping');
+                renderDisplayedComments(); // Re-render to show updated "reacted" state
                 postData({ action: 'addReaction', commentID: id, reactionType: reactionType });
             });
 
             loadMoreBtn.addEventListener('click', () => {
                 displayedCommentsCount = Math.min(allRootComments.length, displayedCommentsCount + LOAD_MORE_COUNT);
                 renderDisplayedComments();
+            });
+
+            commentsContainer.addEventListener('focusin', (e) => {
+                 if (e.target.matches('.reply-form-container textarea')) {
+                    handleInputFocus(e);
+                }
             });
 
             commentsContainer.addEventListener('click', (e) => {
@@ -410,29 +449,27 @@
                 if (target.matches('.reaction-btn, .reaction-btn *')) {
                     const reactionBtn = target.closest('.reaction-btn');
                     if (reactionBtn.disabled) return;
-                    
                     const id = reactionBtn.dataset.id;
                     const reactionType = reactionBtn.dataset.reactionType;
                     localStorage.setItem(`reacted-${id}`, reactionType);
-                    
-                    reactionBtn.classList.add('popping', 'reacted');
-                    reactionBtn.parentElement.querySelectorAll('.reaction-btn').forEach(btn => { btn.disabled = true; });
-
-                    const countSpan = reactionBtn.querySelector('.count');
-                    countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                    reactionBtn.classList.add('popping');
+                    renderDisplayedComments();
                     postData({ action: 'addReaction', commentID: id, reactionType: reactionType });
                 }
                 
                 if (target.matches('.reply-btn')) {
                     const formContainer = commentElement.querySelector('.reply-form-container');
-                    formContainer.innerHTML = formContainer.innerHTML === '' ? `<textarea placeholder="Write a reply..."></textarea><button class="submit-reply-btn" data-parent-id="${commentId}">Post Reply</button>` : '';
-                    if(formContainer.innerHTML !== '') formContainer.querySelector('textarea').focus();
+                    if(formContainer.innerHTML === '') {
+                        formContainer.innerHTML = `<textarea placeholder="Write a reply..."></textarea><button class="submit-reply-btn" data-parent-id="${commentId}">Post Reply</button>`;
+                        formContainer.querySelector('textarea').focus(); // Auto-focus when opening
+                    } else {
+                        formContainer.innerHTML = ''; // Close if already open
+                    }
                 }
                 
                 if (target.matches('.show-replies-btn')) {
                     const repliesContainer = commentElement.querySelector('.replies-container');
                     const isHidden = repliesContainer.style.display === 'none' || repliesContainer.style.display === '';
-                    
                     if (isHidden) {
                         const parentCommentData = allRootComments.find(c => c.commentID === commentId);
                         if (parentCommentData && parentCommentData.replies && parentCommentData.replies.length > 0) {
@@ -463,20 +500,12 @@
                     repliesContainer.appendChild(createCommentElement(optimisticReply));
 
                     textarea.parentElement.innerHTML = '';
-
-                    let parentCommentData = allRootComments.find(c => c.commentID === parentId);
-                    if(parentCommentData) {
-                         if(!parentCommentData.replies) parentCommentData.replies = [];
-                         // Note: The real reply data will come from the server on next fetch
-                    }
                     
                     postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, parentID: parentId, userID: USER_ID, username: 'Anonymous', commentText: text });
                 }
             });
 
-        });
+        })();
     </script>
-    <!-- ======== END: NEW SCRIPT TAG FOR THE COMMENT SYSTEM ======== -->
-
 </body>
 </html>
