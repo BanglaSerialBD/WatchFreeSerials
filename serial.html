@@ -287,8 +287,25 @@
             
             if (navigator.userAgent.includes(APP_IDENTIFIER)) { document.getElementById('download-app-btn').classList.add('hidden'); }
             
-            const videoKeyword = sessionStorage.getItem('videoKeyword');
-            if (!videoKeyword) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`; return; }
+            // --- MODIFIED SECTION ---
+            let videoKeyword = null; 
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const secretCode = urlParams.get('video');
+
+                if (secretCode) {
+                    videoKeyword = atob(secretCode); // Decode from Base64
+                }
+            } catch (e) {
+                console.error("Error decoding video keyword from URL:", e);
+                // videoKeyword remains null
+            }
+            
+            if (!videoKeyword) { 
+                initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`; 
+                return; 
+            }
             
             const today = new Date(); 
             const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
