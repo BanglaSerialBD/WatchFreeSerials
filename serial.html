@@ -46,12 +46,14 @@
         #loader-countdown-text { font-size: 24px; font-weight: 700; color: var(--text-secondary); transition: color 0.5s ease; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* --- START: PROMOTION BOX STYLE (MODIFIED) --- */
+        /* --- START: PROMOTION BOX STYLE (MODIFIED FOR TRANSPARENCY) --- */
         #promo-box {
-            padding: 20px 10px;
+            padding: 20px;
             margin-top: -10px; 
             margin-bottom: 20px;
-            background-color: #050505; /* UPDATED BACKGROUND COLOR */
+            background-color: rgba(26, 26, 26, 0.85); /* <-- SEMI-TRANSPARENT BACKGROUND */
+            backdrop-filter: blur(4px); /* <-- ADDS A GLASSY BLUR EFFECT */
+            border: 1px solid var(--border-color);
             border-radius: 12px; 
             width: auto;
             max-width: 95%;   
@@ -296,53 +298,94 @@
     <!-- ======== NEW SCRIPT FOR SMART PROMOTION BOX ======== -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Text and translations for the promo box
+
+            // ,,,,start putting promo html code from here,,,,,,,,,,,,,,,,,,,
+            //
+            // Edit the text for your promotion here. The code will automatically
+            // pick the correct language based on the user's browser settings.
+            //
             const promoTranslations = {
-                'en': {
+                'en': { // For America, Singapore, Africa (default)
                     browser: {
-                        header: 'Having trouble loading?',
-                        caption: 'Try our official app for a faster and smoother experience!',
-                        buttonText: 'Download Our App'
-                    },
-                    app: { // This text will be shown if an app user somehow sees this
-                        header: 'Loading your video...',
-                        caption: 'Thank you for using our app!'
+                        header: 'New Serials Every Day!',
+                        caption: 'Our official app provides the fastest and smoothest experience.',
+                        buttonText: 'Download The App'
                     }
                 },
-                'bn': {
+                'bn': { // For Bangladesh
                     browser: {
-                        header: 'লোড করতে সমস্যা হচ্ছে?',
-                        caption: 'দ্রুত এবং মসৃণ অভিজ্ঞতার জন্য আমাদের অফিসিয়াল অ্যাপটি চেষ্টা করুন!',
-                        buttonText: 'অ্যাপ ডাউনলোড করুন'
-                    },
-                    app: {
-                        header: 'আপনার ভিডিও লোড হচ্ছে...',
-                        caption: 'আমাদের অ্যাপ ব্যবহার করার জন্য ধন্যবাদ!'
+                        header: 'প্রতিদিন নতুন সিরিয়াল!',
+                        caption: 'আমাদের অফিসিয়াল অ্যাপটি সবচেয়ে দ্রুত এবং মসৃণ অভিজ্ঞতা প্রদান করে।',
+                        buttonText: 'অ্যাপটি ডাউনলোড করুন'
+                    }
+                },
+                'ar': { // For Saudi Arabia, Jordan, Qatar
+                    browser: {
+                        header: 'مسلسلات جديدة كل يوم!',
+                        caption: 'تطبيقنا الرسمي يوفر أسرع وأسلس تجربة.',
+                        buttonText: 'تحميل التطبيق'
+                    }
+                },
+                'hi': { // For India
+                    browser: {
+                        header: 'हर दिन नए सीरियल!',
+                        caption: 'हमारा आधिकारिक ऐप सबसे तेज़ और सबसे सहज अनुभव प्रदान करता है।',
+                        buttonText: 'ऐप डाउनलोड करें'
+                    }
+                },
+                'it': { // For Italy
+                    browser: {
+                        header: 'Nuove Serie Ogni Giorno!',
+                        caption: 'La nostra app ufficiale offre l\'esperienza più veloce e fluida.',
+                        buttonText: 'Scarica l\'App'
+                    }
+                },
+                'ms': { // For Malaysia
+                    browser: {
+                        header: 'Siri Baharu Setiap Hari!',
+                        caption: 'Aplikasi rasmi kami menyediakan pengalaman yang paling pantas dan lancar.',
+                        buttonText: 'Muat Turun Aplikasi'
+                    }
+                },
+                'ro': { // For Romania
+                    browser: {
+                        header: 'Seriale Noi În Fiecare Zi!',
+                        caption: 'Aplicația noastră oficială oferă cea mai rapidă și fluidă experiență.',
+                        buttonText: 'Descărcați Aplicația'
                     }
                 }
             };
+            //
+            // You can add more languages above this line. For example, for French:
+            // 'fr': {
+            //      browser: { header: '...', caption: '...', buttonText: '...' }
+            // },
+            //
+            // ,,,,,,,,,,,,,,,,,,end putting html code for promo here,,,,,,,,,,,,,,,
 
             const appIdentifier = 'BanglaSerial/1.0';
             const currentUserAgent = navigator.userAgent;
             const userLang = (navigator.language || 'en').split('-')[0];
             const langPack = promoTranslations[userLang] || promoTranslations['en'];
 
-            // Check if the user is in a regular browser
             if (!currentUserAgent.includes(appIdentifier)) {
                 const content = langPack.browser;
-                
+                if (!content) return; // Failsafe if a language pack is malformed
+
                 document.getElementById('app-header').innerText = content.header;
                 document.getElementById('app-caption').innerText = content.caption;
 
-                // Create and add the download button
                 const buttonPlaceholder = document.getElementById('button-placeholder');
                 const button = document.createElement('a');
                 button.className = 'smart-download-button';
+                
+                // Change the link to your app or file here
                 button.href = 'https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/refs/heads/main/BanglaSerial.apk';
+                
                 button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z"/></svg><span>${content.buttonText}</span>`;
                 buttonPlaceholder.appendChild(button);
 
-            } else { // Otherwise, the user is in the app, so hide the promo
+            } else { 
                 document.getElementById('promo-box').classList.add('hidden');
             }
         });
