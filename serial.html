@@ -108,36 +108,82 @@
         .clearfix::after { content: ""; clear: both; display: table; }
 
         /* =============================================================== */
-        /* ============== START: EDITABLE PROMOTION STYLES =============== */
+        /* =========== START: UPGRADED EDITABLE PROMOTION STYLES ========= */
         /* =============================================================== */
         #loader-promo-container { 
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
             position: absolute; bottom: 30px; left: 30px; 
-            opacity: 0; transform: scale(0.8); transition: opacity 0.5s ease, transform 0.5s ease; 
-            pointer-events: none; max-width: 300px;
+            opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease-out, transform 0.5s ease-out; 
+            pointer-events: none; max-width: 320px; text-align: center;
         }
         #loader-promo-container.visible { opacity: 1; transform: scale(1); pointer-events: all; }
-        #loader-promo-text { font-size: 15px; font-weight: 600; color: var(--text-primary); text-align: center; margin: 0; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        #loader-promo-text { 
+            font-size: 15px; font-weight: 600; color: var(--text-primary); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6); line-height: 1.4;
+        }
         .loader-promo-button {
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            width: 100%; padding: 14px 20px; box-sizing: border-box;
-            background-image: linear-gradient(180deg, #0d6efd, #0a58ca);
-            color: white; border-radius: 50px; text-decoration: none;
+            width: 100%; padding: 14px 22px; box-sizing: border-box;
+            background: linear-gradient(145deg, #2a7dff, #0d6efd);
+            color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px; text-decoration: none;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-size: 16px; font-weight: 600; text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            font-size: 16px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2), 0 2px 5px rgba(0,0,0,0.3);
+            transition: all 0.25s ease-out;
+            position: relative; overflow: hidden;
         }
-        .loader-promo-button:hover { transform: translateY(-4px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.25); }
+        .loader-promo-button:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3), 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .loader-promo-button::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            background-color: var(--primary-accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0;
+            animation: pulse-glow 2.5s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.2; }
+            70% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+        }
+        .loader-promo-button svg,
+        .loader-promo-button span {
+            position: relative; /* Ensure icon and text are above the glow */
+            z-index: 1;
+        }
         .loader-promo-button .download-icon {
             width: 24px; height: 24px; fill: white;
             animation: bounce-icon 2s infinite ease-in-out;
         }
         @keyframes bounce-icon { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
         /* =============================================================== */
-        /* =============== END: EDITABLE PROMOTION STYLES ================ */
+        /* ============ END: UPGRADED EDITABLE PROMOTION STYLES ========== */
         /* =============================================================== */
+/* ADD THIS TO YOUR CSS */
 
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap');
+
+/* This styles your new text */
+#channel-instruction-text {
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: transparent;
+  text-align: center;
+  padding: 10px;
+}
+    
+    
+    
+    
+    
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
@@ -161,10 +207,19 @@
                 <span id="loader-promo-button-text"></span>
             </a>
         </div>
-        <!-- =========================================================== -->
+                <!-- =========================================================== -->
         <!-- =============== END: EDITABLE PROMOTION HTML ============== -->
         <!-- =========================================================== -->
     </div>
+
+    <!--
+    ========================================================================
+    ====== ADD THIS NEW DIV HERE, RIGHT BEFORE THE "app-container" =======
+    ========================================================================
+    -->
+    <div id="channel-instruction-text" data-translate-key="channelInstruction"></div>
+    <!-- ====================================================================== -->
+
 
     <!-- The rest of the body HTML is completely unchanged -->
     <div id="app-container">
@@ -248,7 +303,7 @@
             let canShowCenterButton = false;
             let isInApp = false;
             
-            // --- ELEMENT SELECTORS (UNCHANGED) ---
+           // --- ELEMENT SELECTORS (UNCHANGED) ---
             const initialPlayOverlay = document.getElementById("initial-play-overlay"); const spinnerLoaderScreen = document.getElementById("spinner-loader-screen"); const loaderCountdownText = document.getElementById("loader-countdown-text"); const reloadContainer = document.getElementById("reload-container"); const playerWrapper = document.getElementById("player-wrapper"); const videoTitleContainer = document.getElementById("video-title-container"); const playPauseBtn = document.getElementById("play-pause-btn"); const fullscreenBtn = document.getElementById("fullscreen-btn"); const floatingButtonsContainer = document.getElementById("floating-buttons-container"); const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn"); const rotateBtn = document.getElementById("rotate-btn"); const backBtnBottom = document.getElementById("back-btn-bottom"); const centerPlayPauseBtn = document.getElementById('center-play-pause-btn'); const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") }; const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") }; const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
             const loaderPromoContainer = document.getElementById('loader-promo-container'); // Promo selector
             const player = new Plyr("#player", { controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'], tooltips: { controls: true, seek: true } });
@@ -281,7 +336,8 @@
             function startLoader(isRetry = false) { clearInterval(loaderTimerInterval); spinnerLoaderScreen.classList.remove('hidden'); reloadContainer.classList.remove('visible'); if (loaderPromoContainer) loaderPromoContainer.classList.remove('visible'); spinnerLoaderScreen.classList.toggle('retry-mode', isRetry); let count = 0; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; loaderTimerInterval = setInterval(() => { count++; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; if (count === RELOAD_APPEAR_SECONDS) { reloadContainer.classList.add('visible'); if (PROMO_CONFIG.enabled && !isInApp && loaderPromoContainer) { loaderPromoContainer.classList.add('visible'); } } if (count >= COUNTDOWN_MAX) { clearInterval(loaderTimerInterval); } }, 1000); player.play(); }
             function handlePrimaryPlay() { if (!isFirstPlayAttempt) { player.togglePlay(); return; } initialPlayOverlay.classList.add('hidden'); if (player.muted) player.muted = false; startLoader(false); }
             function handleReload() { if (currentVideoSource) { player.source = { type: 'video', sources: [] }; setTimeout(() => { player.source = { type: "video", sources: [{ src: currentVideoSource.videoUrl }], poster: currentVideoSource.posterUrl }; startLoader(true); }, 100); } }
-
+            
+            
             // --- INITIALIZATION ---
             function setupEventListeners() {
                 document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay);
