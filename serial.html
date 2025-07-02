@@ -8,11 +8,15 @@
     <title>Loading...</title>
     <link rel="preconnect" href="https://cdn.plyr.io">
     <link rel="preconnect" href="https://docs.google.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.css" as="style">
     <link rel="preload" href="https://cdn.plyr.io/3.7.0/plyr.js" as="script">
     <link rel="icon" type="image/png" href="letter-b.png">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.0/plyr.css" />
     <style>
+        /* NEW: Font import moved to the top for best practice. */
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap');
+        
         /* --- CORE STYLES & THEME (UNCHANGED) --- */
         :root { 
             --primary-accent: #00AFFF; 
@@ -25,6 +29,21 @@
             --retry-accent: #ffae42;
         }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow: hidden; color: var(--text-primary); }
+        
+        /* ======================================================= */
+        /* ====== NEW: Style for the instruction text added ====== */
+        /* ======================================================= */
+        #channel-instruction-text {
+          font-family: 'Comfortaa', sans-serif;
+          font-weight: 600;
+          color: #FFFFFF;
+          background: transparent;
+          text-align: center;
+          padding: 10px;
+          box-sizing: border-box; /* Ensures padding doesn't add to width */
+        }
+        /* ======================================================= */
+
         #app-container { display: flex; flex-direction: column; width: 100%; height: 100vh; }
         .content-container { flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 16px 24px; box-sizing: border-box; overflow-y: auto; touch-action: pan-y; overscroll-behavior-y: contain; }
         .hidden { display: none !important; }
@@ -106,84 +125,16 @@
         #load-more-btn { width: 100%; padding: 10px; margin-top: 15px; background-color: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); cursor: pointer; border-radius: 8px; font-weight: bold; }
         #status-message { color: var(--text-secondary); text-align: center; }
         .clearfix::after { content: ""; clear: both; display: table; }
-
-        /* =============================================================== */
-        /* =========== START: UPGRADED EDITABLE PROMOTION STYLES ========= */
-        /* =============================================================== */
-        #loader-promo-container { 
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-            position: absolute; bottom: 30px; left: 30px; 
-            opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease-out, transform 0.5s ease-out; 
-            pointer-events: none; max-width: 320px; text-align: center;
-        }
+        #loader-promo-container { display: flex; flex-direction: column; align-items: center; gap: 12px; position: absolute; bottom: 30px; left: 30px; opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease-out, transform 0.5s ease-out; pointer-events: none; max-width: 320px; text-align: center; }
         #loader-promo-container.visible { opacity: 1; transform: scale(1); pointer-events: all; }
-        #loader-promo-text { 
-            font-size: 15px; font-weight: 600; color: var(--text-primary); 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.6); line-height: 1.4;
-        }
-        .loader-promo-button {
-            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            width: 100%; padding: 14px 22px; box-sizing: border-box;
-            background: linear-gradient(145deg, #2a7dff, #0d6efd);
-            color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px; text-decoration: none;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-size: 16px; font-weight: bold;
-            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2), 0 2px 5px rgba(0,0,0,0.3);
-            transition: all 0.25s ease-out;
-            position: relative; overflow: hidden;
-        }
-        .loader-promo-button:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3), 0 4px 8px rgba(0,0,0,0.3);
-        }
-        .loader-promo-button::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 100%; height: 100%;
-            background-color: var(--primary-accent);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            opacity: 0;
-            animation: pulse-glow 2.5s infinite;
-        }
-        @keyframes pulse-glow {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.2; }
-            70% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-        }
-        .loader-promo-button svg,
-        .loader-promo-button span {
-            position: relative; /* Ensure icon and text are above the glow */
-            z-index: 1;
-        }
-        .loader-promo-button .download-icon {
-            width: 24px; height: 24px; fill: white;
-            animation: bounce-icon 2s infinite ease-in-out;
-        }
+        #loader-promo-text { font-size: 15px; font-weight: 600; color: var(--text-primary); text-shadow: 0 2px 4px rgba(0,0,0,0.6); line-height: 1.4; }
+        .loader-promo-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px 22px; box-sizing: border-box; background: linear-gradient(145deg, #2a7dff, #0d6efd); color: white; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2), 0 2px 5px rgba(0,0,0,0.3); transition: all 0.25s ease-out; position: relative; overflow: hidden; }
+        .loader-promo-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3), 0 4px 8px rgba(0,0,0,0.3); }
+        .loader-promo-button::before { content: ''; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; background-color: var(--primary-accent); border-radius: 50%; transform: translate(-50%, -50%); z-index: 0; opacity: 0; animation: pulse-glow 2.5s infinite; }
+        @keyframes pulse-glow { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.2; } 70% { transform: translate(-50%, -50%) scale(2); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } }
+        .loader-promo-button svg, .loader-promo-button span { position: relative; z-index: 1; }
+        .loader-promo-button .download-icon { width: 24px; height: 24px; fill: white; animation: bounce-icon 2s infinite ease-in-out; }
         @keyframes bounce-icon { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
-        /* =============================================================== */
-        /* ============ END: UPGRADED EDITABLE PROMOTION STYLES ========== */
-        /* =============================================================== */
-/* ADD THIS TO YOUR CSS */
-
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap');
-
-/* This styles your new text */
-#channel-instruction-text {
-  font-family: 'Comfortaa', sans-serif;
-  font-weight: 600;
-  color: #FFFFFF;
-  background: transparent;
-  text-align: center;
-  padding: 10px;
-}
-    
-    
-    
-    
-    
     </style>
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "s6gceeg8bh");
@@ -197,9 +148,6 @@
             <button id="reload-btn" aria-label="Reload"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg></button>
             <span id="reload-text" data-translate-key="reload"></span>
         </div>
-        <!-- =========================================================== -->
-        <!-- ============== START: EDITABLE PROMOTION HTML ============= -->
-        <!-- =========================================================== -->
         <div id="loader-promo-container" class="hidden">
             <p id="loader-promo-text"></p>
             <a id="loader-promo-button" href="#" class="loader-promo-button">
@@ -207,21 +155,11 @@
                 <span id="loader-promo-button-text"></span>
             </a>
         </div>
-                <!-- =========================================================== -->
-        <!-- =============== END: EDITABLE PROMOTION HTML ============== -->
-        <!-- =========================================================== -->
     </div>
 
-    <!--
-    ========================================================================
-    ====== ADD THIS NEW DIV HERE, RIGHT BEFORE THE "app-container" =======
-    ========================================================================
-    -->
+    <!-- NEW: The instruction text div is here, correctly placed. -->
     <div id="channel-instruction-text" data-translate-key="channelInstruction"></div>
-    <!-- ====================================================================== -->
 
-
-    <!-- The rest of the body HTML is completely unchanged -->
     <div id="app-container">
         <div id="player-wrapper">
             <div id="initial-play-overlay"><button id="initial-play-btn"><svg viewBox="0 0 24 24"><path d="M8,5v14l11-7L8,5z"></path></svg><span data-translate-key="clickToPlay"></span></button></div>
@@ -241,55 +179,90 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            /* =========================================================== */
-            /* ============== START: EDITABLE PROMOTION LOGIC ============ */
-            /* =========================================================== */
-
             const PROMO_CONFIG = {
-                // Master switch to turn the promotion on or off. 
-                // Set to 'false' to disable it completely.
                 enabled: true,
-
-                // The link the promotional button will open.
                 link: 'https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/refs/heads/main/BanglaSerial.apk'
             };
             
-            // Add all text for the promotion here.
-            // If a language is missing a translation, it will automatically use the 'en' (English) text.
             const promoTranslations = {
+                'en': { promoText: "Download our app for latest serial updates every day.", promoButtonText: "Download App" },
+                'bn': { promoText: "নিয়মিত নাটকের পর্ব দেখতে আমাদের App ডাউনলোড করুন।", promoButtonText: "অ্যাপ ডাউনলোড করুন" },
+                'hi': { promoText: "हर दिन नवीनतम सीरियल अपडेट के लिए हमारा ऐप डाउनलोड करें।", promoButtonText: "ऐप डाउनलोड करें" },
+                'ar': { promoText: "قم بتنزيل تطبيقنا للحصول على آخر تحديثات المسلسلات كل يوم.", promoButtonText: "تنزيل التطبيق" },
+                'ms': { promoText: "Muat turun aplikasi kami untuk kemas kini siri terkini setiap hari.", promoButtonText: "Muat Turun Apl" },
+                'af': { promoText: "Laai ons toepassing af vir die nuutste reeksopdaterings elke dag.", promoButtonText: "Laai Toep af" }
+            };
+
+            /* ===================================================================== */
+            /* ====== NEW: coreTranslations has been updated and expanded ======== */
+            /* ===================================================================== */
+            const coreTranslations = {
                 'en': {
-                    promoText: "Download our app for latest serial updates every day.",
-                    promoButtonText: "Download App"
+                    pageTitle: "WatchBanglaSerial",
+                    clickToPlay: "Click to Play Video",
+                    loadingText: "Please wait... Loading",
+                    enjoyWatching: "💕 Enjoy watching the Serial 💕",
+                    videoDescription: "💕Enjoy Watching Serials With Our App💕",
+                    reload: "Reload",
+                    todaysEpisode: "Today's Episode 📺",
+                    videoNotFound: 'Video not found for "{keyword}".',
+                    networkError: "Network error fetching video list.",
+                    noVideoSelected: "Error: No video selected.",
+                    play: "Play", pause: "Pause", resume: "Resume",
+                    rotateText: "Rotate", exitFullscreenText: "Exit", fullscreenText: "Fullscreen",
+                    downloadAppText: "Download App", goBackButton: "Go Back",
+                    playPauseLabel: "Play/Pause", rotateLabel: "Toggle Rotation",
+                    exitFullscreenLabel: "Exit Fullscreen", fullscreenLabel: "Toggle Fullscreen",
+                    channelInstruction: "Click any channel above to watch Bangla Serials"
                 },
                 'bn': {
-                    promoText: "নিয়মিত নাটকের পর্ব দেখতে আমাদের App ডাউনলোড করুন।",
-                    promoButtonText: "অ্যাপ ডাউনলোড করুন"
+                    pageTitle: "বাংলা সিরিয়াল দেখুন",
+                    clickToPlay: "ভিডিও চালাতে ক্লিক করুন",
+                    loadingText: "অনুগ্রহ করে অপেক্ষা করুন...",
+                    enjoyWatching: "💕 সিরিয়াল দেখে উপভোগ করুন 💕",
+                    videoDescription: "নাটক দেখার অ্যাপটি Download করুণ",
+                    reload: "পুনরায় লোড করুন",
+                    todaysEpisode: "আজকের পর্ব 📺",
+                    videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।',
+                    networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।",
+                    noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।",
+                    play: "চালান", pause: "থামান", resume: "পুনরায় শুরু",
+                    rotateText: "ঘোরান", exitFullscreenText: "প্রস্থান", fullscreenText: "ফুলস্ক্রিন",
+                    downloadAppText: "অ্যাপ ডাউনলোড করুন", goBackButton: "ফিরে যান",
+                    playPauseLabel: "চালান/থামান", rotateLabel: "ঘোরানো টগল করুন",
+                    exitFullscreenLabel: "ফুলস্ক্রিন থেকে প্রস্থান", fullscreenLabel: "ফুলস্ক্রিন টগল করুন",
+                    channelInstruction: "বাংলা সিরিয়াল দেখতে উপরের যেকোনো চ্যানেলে ক্লিক করুন"
                 },
-                'hi': { // For India
-                    promoText: "हर दिन नवीनतम सीरियल अपडेट के लिए हमारा ऐप डाउनलोड करें।",
-                    promoButtonText: "ऐप डाउनलोड करें"
+                'hi': { // Hindi (for India)
+                    pageTitle: "बांग्ला सीरियल देखें",
+                    clickToPlay: "चलाने के लिए क्लिक करें",
+                    loadingText: "कृपया प्रतीक्षा करें...",
+                    reload: "पुनः लोड करें",
+                    channelInstruction: "बांग्ला सीरियल देखने के लिए ऊपर किसी भी चैनल पर क्लिक करें"
                 },
-                'ar': { // For Jordan, Qatar
-                    promoText: "قم بتنزيل تطبيقنا للحصول على آخر تحديثات المسلسلات كل يوم.",
-                    promoButtonText: "تنزيل التطبيق"
+                'ar': { // Arabic (for Jordan, Qatar)
+                    pageTitle: "شاهد مسلسلات البنغالية",
+                    clickToPlay: "انقر للتشغيل",
+                    loadingText: "الرجاء الانتظار...",
+                    reload: "إعادة تحميل",
+                    channelInstruction: "لمشاهدة المسلسلات البنغالية، انقر على أي قناة أعلاه"
                 },
-                'ms': { // For Malaysia
-                    promoText: "Muat turun aplikasi kami untuk kemas kini siri terkini setiap hari.",
-                    promoButtonText: "Muat Turun Apl"
+                'af': { // Afrikaans (for South Africa)
+                    pageTitle: "Kyk na Bangla-reekse",
+                    clickToPlay: "Klik om te speel",
+                    loadingText: "Wag asseblief...",
+                    reload: "Herlaai",
+                    channelInstruction: "Klik op enige kanaal hierbo om Bangla-reekse te kyk"
                 },
-                'af': { // For South Africa
-                    promoText: "Laai ons toepassing af vir die nuutste reeksopdaterings elke dag.",
-                    promoButtonText: "Laai Toep af"
+                'zu': { // Zulu (for South Africa)
+                    pageTitle: "Buka ama-Bangla Serials",
+                    clickToPlay: "Chofoza ukuze udlale",
+                    loadingText: "Sicela ulinde...",
+                    reload: "Layisha kabusha",
+                    channelInstruction: "Chofoza noma yisiphi isiteshi ngenhla ukuze ubukele ama-Bangla Serials"
                 }
             };
 
-            /* =========================================================== */
-            /* =============== END: EDITABLE PROMOTION LOGIC ============= */
-            /* =========================================================== */
-
-
-            // --- CORE PLAYER CONFIG & STATE (UNCHANGED) ---
-            const coreTranslations = { 'en': { pageTitle: "WatchBanglaSerial", clickToPlay: "Click to Play Video", loadingText: "Please wait... Loading", enjoyWatching: "💕 Enjoy watching the Serial 💕", videoDescription: "💕Enjoy Watching Serials With Our App💕", reload: "Reload", todaysEpisode: "Today's Episode 📺", videoNotFound: 'Video not found for "{keyword}".', networkError: "Network error fetching video list.", noVideoSelected: "Error: No video selected.", play: "Play", pause: "Pause", resume: "Resume", rotateText: "Rotate", exitFullscreenText: "Exit", fullscreenText: "Fullscreen", downloadAppText: "Download App", goBackButton: "Go Back", playPauseLabel: "Play/Pause", rotateLabel: "Toggle Rotation", exitFullscreenLabel: "Exit Fullscreen", fullscreenLabel: "Toggle Fullscreen" }, 'bn': { pageTitle: "বাংলা সিরিয়াল দেখুন", clickToPlay: "ভিডিও চালাতে ক্লিক করুন", loadingText: "অনুগ্রহ করে অপেক্ষা করুন...", enjoyWatching: "💕 সিরিয়াল দেখে উপভোগ করুন 💕", videoDescription: "নাটক দেখার অ্যাপটি Download করুণ", reload: "পুনরায় লোড করুন", todaysEpisode: "আজকের পর্ব 📺", videoNotFound: '"{keyword}" এর জন্য ভিডিও খুঁজে পাওয়া যায়নি।', networkError: "ভিডিও তালিকা আনতে নেটওয়ার্ক ত্রুটি।", noVideoSelected: "ত্রুটি: কোনো ভিডিও নির্বাচন করা হয়নি।", play: "চালান", pause: "থামান", resume: "পুনরায় শুরু", rotateText: "ঘোরান", exitFullscreenText: "প্রস্থান", fullscreenText: "ফুলস্ক্রিন", downloadAppText: "অ্যাপ ডাউনলোড করুন", goBackButton: "ফিরে যান", playPauseLabel: "চালান/থামান", rotateLabel: "ঘোরানো টগল করুন", exitFullscreenLabel: "ফুলস্ক্রিন থেকে প্রস্থান", fullscreenLabel: "ফুলস্ক্রিন টগল করুন" },};
             let currentLang = 'en';
             const HOMEPAGE_URL = "https://sites.google.com/view/freezeebangla/home";
             const APP_IDENTIFIER = 'BanglaSerial/1.0';
@@ -303,24 +276,17 @@
             let canShowCenterButton = false;
             let isInApp = false;
             
-           // --- ELEMENT SELECTORS (UNCHANGED) ---
             const initialPlayOverlay = document.getElementById("initial-play-overlay"); const spinnerLoaderScreen = document.getElementById("spinner-loader-screen"); const loaderCountdownText = document.getElementById("loader-countdown-text"); const reloadContainer = document.getElementById("reload-container"); const playerWrapper = document.getElementById("player-wrapper"); const videoTitleContainer = document.getElementById("video-title-container"); const playPauseBtn = document.getElementById("play-pause-btn"); const fullscreenBtn = document.getElementById("fullscreen-btn"); const floatingButtonsContainer = document.getElementById("floating-buttons-container"); const exitFullscreenBtn = document.getElementById("exit-fullscreen-btn"); const rotateBtn = document.getElementById("rotate-btn"); const backBtnBottom = document.getElementById("back-btn-bottom"); const centerPlayPauseBtn = document.getElementById('center-play-pause-btn'); const playIcons = { bottom: document.getElementById("play-icon"), center: document.getElementById("center-play-icon") }; const pauseIcons = { bottom: document.getElementById("pause-icon"), center: document.getElementById("center-pause-icon") }; const playPauseTexts = { bottom: document.getElementById("play-pause-text"), center: document.getElementById("center-play-pause-text") };
-            const loaderPromoContainer = document.getElementById('loader-promo-container'); // Promo selector
+            const loaderPromoContainer = document.getElementById('loader-promo-container');
             const player = new Plyr("#player", { controls: ['progress', 'current-time', 'duration', 'mute', 'volume', 'settings'], tooltips: { controls: true, seek: true } });
 
-            // --- CORE FUNCTIONS (MODIFIED TO SUPPORT PROMO) ---
             function getBestLanguage() { const userLangs = navigator.languages || [navigator.language || 'en']; for (const lang of userLangs) { const baseLang = lang.split('-')[0]; if (coreTranslations[baseLang]) { return baseLang; } } return 'en'; }
-            function getTranslatedString(key, type = 'core') { let dict, fallbackDict; if(type === 'promo'){ dict = promoTranslations[currentLang]; fallbackDict = promoTranslations['en']; } else { dict = coreTranslations[currentLang]; fallbackDict = coreTranslations['en']; } let text = (dict && dict[key] !== undefined) ? dict[key] : (fallbackDict[key] || key); return text; }
+            function getTranslatedString(key, type = 'core') { let dict, fallbackDict; if(type === 'promo'){ dict = promoTranslations[currentLang] || promoTranslations['en']; fallbackDict = promoTranslations['en']; } else { dict = coreTranslations[currentLang] || coreTranslations['en']; fallbackDict = coreTranslations['en']; } let text = (dict && dict[key] !== undefined) ? dict[key] : (fallbackDict[key] || key); return text; }
             function applyTranslations() {
                 document.documentElement.lang = currentLang; document.title = getTranslatedString('pageTitle');
                 document.querySelectorAll('[data-translate-key]').forEach(el => { el.textContent = getTranslatedString(el.dataset.translateKey); });
                 document.querySelectorAll('[data-translate-aria-key]').forEach(el => { el.setAttribute('aria-label', getTranslatedString(el.dataset.translateAriaKey)); });
-                
-                // Apply promo translations
-                if(PROMO_CONFIG.enabled){
-                    document.getElementById('loader-promo-text').textContent = getTranslatedString('promoText', 'promo');
-                    document.getElementById('loader-promo-button-text').textContent = getTranslatedString('promoButtonText', 'promo');
-                }
+                if(PROMO_CONFIG.enabled){ document.getElementById('loader-promo-text').textContent = getTranslatedString('promoText', 'promo'); document.getElementById('loader-promo-button-text').textContent = getTranslatedString('promoButtonText', 'promo'); }
             }
             function getEnvironment() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'mobile' : 'desktop'; }
             function isPlayerInFullscreen() { return player.fullscreen.active || playerWrapper.classList.contains('simulated-fullscreen'); }
@@ -330,119 +296,17 @@
             function intelligentRotation() { if (window.matchMedia("(orientation: landscape)").matches) { return; } playerWrapper.classList.add('force-rotate'); }
             function handleEnterFullscreen() { updateFloatingButtonsVisibility(true); if (environment !== 'desktop') { autoRotateTimer = setTimeout(intelligentRotation, 2000); } }
             function handleExitFullscreen() { updateFloatingButtonsVisibility(false); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }
-
-            // --- DATA FETCHING & PLAYBACK (MODIFIED FOR PROMO) ---
             async function fetchVideoData(videoKeyword) { try { const response = await fetch(`${SHEET_CSV_URL}&_=${new Date().getTime()}`, { cache: 'no-store' }); if (!response.ok) throw new Error(getTranslatedString('networkError')); const csvText = await response.text(); const videoRow = csvText.split("\n").map(line => line.split(",")).find(row => row[0] && row[0].trim().toLowerCase() === videoKeyword.trim().toLowerCase()); if (videoRow && videoRow[1]) { return { videoUrl: videoRow[1].trim(), posterUrl: videoRow[2]?.trim() || "" }; } throw new Error(getTranslatedString('videoNotFound', { keyword: videoKeyword })); } catch (error) { throw error; } }
             function startLoader(isRetry = false) { clearInterval(loaderTimerInterval); spinnerLoaderScreen.classList.remove('hidden'); reloadContainer.classList.remove('visible'); if (loaderPromoContainer) loaderPromoContainer.classList.remove('visible'); spinnerLoaderScreen.classList.toggle('retry-mode', isRetry); let count = 0; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; loaderTimerInterval = setInterval(() => { count++; loaderCountdownText.textContent = `${getTranslatedString('loadingText')} (${count}s)`; if (count === RELOAD_APPEAR_SECONDS) { reloadContainer.classList.add('visible'); if (PROMO_CONFIG.enabled && !isInApp && loaderPromoContainer) { loaderPromoContainer.classList.add('visible'); } } if (count >= COUNTDOWN_MAX) { clearInterval(loaderTimerInterval); } }, 1000); player.play(); }
             function handlePrimaryPlay() { if (!isFirstPlayAttempt) { player.togglePlay(); return; } initialPlayOverlay.classList.add('hidden'); if (player.muted) player.muted = false; startLoader(false); }
             function handleReload() { if (currentVideoSource) { player.source = { type: 'video', sources: [] }; setTimeout(() => { player.source = { type: "video", sources: [{ src: currentVideoSource.videoUrl }], poster: currentVideoSource.posterUrl }; startLoader(true); }, 100); } }
-            
-            
-            // --- INITIALIZATION ---
-            function setupEventListeners() {
-                document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay);
-                document.getElementById('reload-btn').addEventListener('click', handleReload);
-                document.getElementById('loader-promo-button').href = PROMO_CONFIG.link; // Set promo link
-                const playerContainer = player.elements.container;
-                playerContainer.addEventListener('mousemove', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } });
-                playerContainer.addEventListener('touchstart', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } }, { passive: true });
-                fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } });
-                exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click());
-                rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate'));
-                backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } });
-                playPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } });
-                centerPlayPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); });
-                player.on('playing', () => { if (isFirstPlayAttempt) { spinnerLoaderScreen.classList.add('hidden'); clearInterval(loaderTimerInterval); isFirstPlayAttempt = false; setTimeout(() => { setTimeout(() => { canShowCenterButton = true; }, 30000); }, 500); } syncAllPlayPauseButtons(); });
-                player.on('enterfullscreen', handleEnterFullscreen); player.on('exitfullscreen', handleExitFullscreen);
-                player.on('pause', syncAllPlayPauseButtons); player.on('ready', syncAllPlayPauseButtons);
-            }
-            async function main() {
-                isInApp = navigator.userAgent.includes(APP_IDENTIFIER);
-                currentLang = getBestLanguage();
-                environment = getEnvironment();
-                setupEventListeners(); // Must run before applyTranslations to set promo link
-                applyTranslations();
-                if (isInApp) { document.getElementById('download-app-btn').classList.add('hidden'); }
-                const videoKeyword = sessionStorage.getItem('videoKeyword');
-                if (!videoKeyword) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`; document.getElementById('comments-section').classList.add('hidden'); return; }
-                const today = new Date();
-                const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' });
-                videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`;
-                try { const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword); currentVideoSource = { videoUrl, posterUrl }; player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl }; } catch (error) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${error.message}</p>`; }
-            }
-            
+            function setupEventListeners() { document.getElementById('initial-play-btn').addEventListener('click', handlePrimaryPlay); document.getElementById('reload-btn').addEventListener('click', handleReload); document.getElementById('loader-promo-button').href = PROMO_CONFIG.link; const playerContainer = player.elements.container; playerContainer.addEventListener('mousemove', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } }); playerContainer.addEventListener('touchstart', () => { if (!isFirstPlayAttempt) { updateFloatingButtonsVisibility(false); updateCenterButtonVisibility(); } }, { passive: true }); fullscreenBtn.addEventListener('click', () => { if (isPlayerInFullscreen()) { if (playerWrapper.classList.contains('simulated-fullscreen')) { playerWrapper.classList.remove('simulated-fullscreen'); handleExitFullscreen(); } else if (player.fullscreen.active) player.fullscreen.exit(); } else { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.play(); } if (environment === 'desktop') player.fullscreen.enter(); else { playerWrapper.classList.add('simulated-fullscreen'); handleEnterFullscreen(); } } }); exitFullscreenBtn.addEventListener('click', () => fullscreenBtn.click()); rotateBtn.addEventListener('click', () => playerWrapper.classList.toggle('force-rotate')); backBtnBottom.addEventListener('click', () => { if (window.history.length > 1) { window.history.back(); } else { window.location.href = HOMEPAGE_URL; } }); playPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } }); centerPlayPauseBtn.addEventListener('click', () => { if (isFirstPlayAttempt) { handlePrimaryPlay(); } else { player.togglePlay(); } setTimeout(() => centerPlayPauseBtn.classList.remove('visible'), 1000); }); player.on('playing', () => { if (isFirstPlayAttempt) { spinnerLoaderScreen.classList.add('hidden'); clearInterval(loaderTimerInterval); isFirstPlayAttempt = false; setTimeout(() => { setTimeout(() => { canShowCenterButton = true; }, 30000); }, 500); } syncAllPlayPauseButtons(); }); player.on('enterfullscreen', handleEnterFullscreen); player.on('exitfullscreen', handleExitFullscreen); player.on('pause', syncAllPlayPauseButtons); player.on('ready', syncAllPlayPauseButtons); }
+            async function main() { isInApp = navigator.userAgent.includes(APP_IDENTIFIER); currentLang = getBestLanguage(); environment = getEnvironment(); setupEventListeners(); applyTranslations(); if (isInApp) { document.getElementById('download-app-btn').classList.add('hidden'); } const videoKeyword = sessionStorage.getItem('videoKeyword'); if (!videoKeyword) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${getTranslatedString('noVideoSelected')}</p>`; document.getElementById('comments-section').classList.add('hidden'); return; } const today = new Date(); const formattedDate = today.toLocaleDateString(currentLang, { day: 'numeric', month: 'long', year: 'numeric' }); videoTitleContainer.innerHTML = `<span>${videoKeyword} ${getTranslatedString('todaysEpisode')}</span><span id="date-box">${formattedDate}</span>`; try { const { videoUrl, posterUrl } = await fetchVideoData(videoKeyword); currentVideoSource = { videoUrl, posterUrl }; player.source = { type: "video", sources: [{ src: videoUrl }], poster: posterUrl }; } catch (error) { initialPlayOverlay.innerHTML = `<p style="color:#FF5555;font-size:18px;text-align:center;padding:50px;">${error.message}</p>`; } }
             main();
         });
     </script>
-
-    <!-- ======== START: FULL, UNTOUCHED COMMENT SYSTEM SCRIPT ======== -->
     <script>
-        (function() {
-            if (!document.getElementById('comments-section')) return; // Safety check
-            
-            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby7VgaQcOuMDAu8ifoXPWPs4tu0soF6Ssg6KWq4nstq5sRjCu_7FKVAQ8IjL9_iuwqZLg/exec';
-            const CURRENT_VIDEO_ID = sessionStorage.getItem('videoKeyword');
-            if (!CURRENT_VIDEO_ID) { console.error("No 'videoKeyword' in sessionStorage. Comments disabled."); return; }
-            const VIDEO_METADATA_ID = `${CURRENT_VIDEO_ID}-METADATA`;
-            let USER_ID = localStorage.getItem('myVideoPlayerUserID') || `user_${Date.now()}`;
-            localStorage.setItem('myVideoPlayerUserID', USER_ID);
-
-            const EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "😠"];
-            const INITIAL_LOAD_COUNT = 20; const LOAD_MORE_COUNT = 20;
-            const commentsContainer = document.getElementById('comments-container');
-            const videoReactionBar = document.getElementById('video-reaction-bar');
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            const statusMessage = document.getElementById('status-message');
-            const mainCommentInput = document.getElementById('comment-input');
-            let allRootComments = []; let displayedCommentsCount = 0;
-
-            const createReactionButtons = (reactions, id) => { const reactedType = localStorage.getItem(`reacted-${id}`); return EMOJIS.map(emoji => { const count = reactions[emoji] || 0; const isReacted = reactedType === emoji; return `<button class="reaction-btn ${isReacted ? 'reacted' : ''}" data-id="${id}" data-reaction-type="${emoji}" ${reactedType ? 'disabled' : ''}>${emoji} <span class="count">${count}</span></button>`; }).join(''); };
-            const createCommentElement = (comment) => {
-                const date = comment.isOptimistic ? "Just now" : new Date(comment.timestamp).toLocaleString();
-                const repliesButton = comment.replies && comment.replies.length > 0 ? `<button class="show-replies-btn" data-num-replies="${comment.replies.length}">Show ${comment.replies.length} replies</button>` : '';
-                const element = document.createElement('div');
-                element.className = comment.isOptimistic ? 'comment optimistic' : 'comment';
-                element.id = `comment-${comment.commentID}`;
-                const sanitizedText = comment.commentText.replace(/</g, "<").replace(/>/g, ">");
-                element.innerHTML = `<div class="comment-header"><span class="comment-author">${comment.username.replace(/</g, "<")}</span><span class="comment-date"> - ${date}</span></div><p class="comment-body">${sanitizedText}</p><div class="comment-actions">${createReactionButtons(comment.reactions, comment.commentID)}<button class="reply-btn">Reply</button>${repliesButton}</div><div class="reply-form-container"></div><div class="replies-container"></div>`;
-                return element;
-            };
-            const renderDisplayedComments = () => { const currentScroll = commentsContainer.scrollTop; commentsContainer.innerHTML = ''; const commentsToRender = allRootComments.slice(0, displayedCommentsCount); if (commentsToRender.length === 0) { commentsContainer.innerHTML = '<p id="status-message">Be the first to comment!</p>'; } else { commentsToRender.forEach(comment => commentsContainer.appendChild(createCommentElement(comment))); } commentsContainer.scrollTop = currentScroll; loadMoreBtn.classList.toggle('hidden', displayedCommentsCount >= allRootComments.length); };
-            const postData = (payload) => { fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(console.error); };
-            const fetchAllData = async () => {
-                statusMessage.textContent = 'Fetching comments...';
-                try {
-                    const response = await fetch(`${WEB_APP_URL}?videoID=${encodeURIComponent(CURRENT_VIDEO_ID)}`);
-                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                    const data = await response.json(); if (data.error) throw new Error(data.error);
-                    videoReactionBar.innerHTML = createReactionButtons(data.videoReactions?.reactions || {}, VIDEO_METADATA_ID);
-                    const comments = data.comments || [];
-                    const calculateScore = (c) => (Object.values(c.reactions || {}).reduce((a, b) => a + b, 0)) + ((c.replies || []).length * 2);
-                    comments.sort((a, b) => calculateScore(b) - calculateScore(a));
-                    const top5 = comments.slice(0, 5); const latest = comments.slice(5).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    allRootComments = [...top5, ...latest];
-                    displayedCommentsCount = Math.min(allRootComments.length, INITIAL_LOAD_COUNT);
-                    renderDisplayedComments();
-                } catch (error) { statusMessage.textContent = 'Could not load comments.'; console.error("Error Fetching Comment Data:", error); }
-            };
-            fetchAllData();
-
-            const handleInputFocus = (event) => { setTimeout(() => { event.target.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300); };
-            mainCommentInput.addEventListener('focus', handleInputFocus);
-            document.getElementById('submit-comment-btn').addEventListener('click', () => { const text = mainCommentInput.value.trim(); if (!text) return; const optimisticComment = { commentID: `temp-${Date.now()}`, username: 'You', commentText: text, reactions: {}, replies: [], isOptimistic: true }; allRootComments.unshift(optimisticComment); if (displayedCommentsCount < INITIAL_LOAD_COUNT) displayedCommentsCount++; renderDisplayedComments(); mainCommentInput.value = ''; postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, userID: USER_ID, username: 'Anonymous', commentText: text }); });
-            videoReactionBar.addEventListener('click', (e) => { const reactionBtn = e.target.closest('.reaction-btn'); if (!reactionBtn || reactionBtn.disabled) return; const id = reactionBtn.dataset.id; const reactionType = reactionBtn.dataset.reactionType; localStorage.setItem(`reacted-${id}`, reactionType); const countSpan = reactionBtn.querySelector('.count'); countSpan.textContent = parseInt(countSpan.textContent) + 1; reactionBtn.classList.add('popping', 'reacted'); videoReactionBar.querySelectorAll('.reaction-btn').forEach(btn => { btn.disabled = true; if(btn.dataset.reactionType !== reactionType) { btn.style.filter = 'saturate(0)'; } }); postData({ action: 'addReaction', commentID: id, reactionType: reactionType }); });
-            loadMoreBtn.addEventListener('click', () => { displayedCommentsCount = Math.min(allRootComments.length, displayedCommentsCount + LOAD_MORE_COUNT); renderDisplayedComments(); });
-            commentsContainer.addEventListener('focusin', (e) => { if (e.target.matches('.reply-form-container textarea')) { handleInputFocus(e); } });
-            commentsContainer.addEventListener('click', (e) => {
-                const target = e.target; const commentElement = target.closest('.comment'); if (!commentElement) return;
-                const commentId = commentElement.id.replace('comment-', '');
-                if (target.matches('.reaction-btn, .reaction-btn *')) { const reactionBtn = target.closest('.reaction-btn'); if (reactionBtn.disabled) return; const id = reactionBtn.dataset.id; const reactionType = reactionBtn.dataset.reactionType; localStorage.setItem(`reacted-${id}`, reactionType); reactionBtn.classList.add('popping'); renderDisplayedComments(); postData({ action: 'addReaction', commentID: id, reactionType: reactionType }); }
-                if (target.matches('.reply-btn')) { const formContainer = commentElement.querySelector('.reply-form-container'); if(formContainer.innerHTML === '') { formContainer.innerHTML = `<textarea placeholder="Write a reply..."></textarea><button class="submit-reply-btn" data-parent-id="${commentId}">Post Reply</button>`; formContainer.querySelector('textarea').focus(); } else { formContainer.innerHTML = ''; } }
-                if (target.matches('.show-replies-btn')) { const repliesContainer = commentElement.querySelector('.replies-container'); const isHidden = repliesContainer.style.display === 'none' || repliesContainer.style.display === ''; if (isHidden) { const parentCommentData = allRootComments.find(c => c.commentID === commentId); if (parentCommentData && parentCommentData.replies && parentCommentData.replies.length > 0) { repliesContainer.innerHTML = ''; parentCommentData.replies.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)).forEach(reply => repliesContainer.appendChild(createCommentElement(reply))); repliesContainer.style.display = 'block'; target.textContent = 'Hide replies'; } } else { repliesContainer.style.display = 'none'; target.textContent = `Show ${target.dataset.numReplies} replies`; } }
-                if (target.matches('.submit-reply-btn')) { const textarea = target.previousElementSibling; const text = textarea.value.trim(); if (!text) return; target.disabled = true; const parentId = target.dataset.parentId; const optimisticReply = { commentID: `temp-reply-${Date.now()}`, username: 'You', commentText: text, reactions: {}, isOptimistic: true, replies: [] }; const repliesContainer = commentElement.querySelector('.replies-container'); if(repliesContainer.style.display === 'none') repliesContainer.style.display = 'block'; repliesContainer.appendChild(createCommentElement(optimisticReply)); textarea.parentElement.innerHTML = ''; postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, parentID: parentId, userID: USER_ID, username: 'Anonymous', commentText: text }); }
-            });
-        })();
+        (function() { if (!document.getElementById('comments-section')) return; const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby7VgaQcOuMDAu8ifoXPWPs4tu0soF6Ssg6KWq4nstq5sRjCu_7FKVAQ8IjL9_iuwqZLg/exec'; const CURRENT_VIDEO_ID = sessionStorage.getItem('videoKeyword'); if (!CURRENT_VIDEO_ID) { console.error("No 'videoKeyword' in sessionStorage. Comments disabled."); return; } const VIDEO_METADATA_ID = `${CURRENT_VIDEO_ID}-METADATA`; let USER_ID = localStorage.getItem('myVideoPlayerUserID') || `user_${Date.now()}`; localStorage.setItem('myVideoPlayerUserID', USER_ID); const EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "😠"]; const INITIAL_LOAD_COUNT = 20; const LOAD_MORE_COUNT = 20; const commentsContainer = document.getElementById('comments-container'); const videoReactionBar = document.getElementById('video-reaction-bar'); const loadMoreBtn = document.getElementById('load-more-btn'); const statusMessage = document.getElementById('status-message'); const mainCommentInput = document.getElementById('comment-input'); let allRootComments = []; let displayedCommentsCount = 0; const createReactionButtons = (reactions, id) => { const reactedType = localStorage.getItem(`reacted-${id}`); return EMOJIS.map(emoji => { const count = reactions[emoji] || 0; const isReacted = reactedType === emoji; return `<button class="reaction-btn ${isReacted ? 'reacted' : ''}" data-id="${id}" data-reaction-type="${emoji}" ${reactedType ? 'disabled' : ''}>${emoji} <span class="count">${count}</span></button>`; }).join(''); }; const createCommentElement = (comment) => { const date = comment.isOptimistic ? "Just now" : new Date(comment.timestamp).toLocaleString(); const repliesButton = comment.replies && comment.replies.length > 0 ? `<button class="show-replies-btn" data-num-replies="${comment.replies.length}">Show ${comment.replies.length} replies</button>` : ''; const element = document.createElement('div'); element.className = comment.isOptimistic ? 'comment optimistic' : 'comment'; element.id = `comment-${comment.commentID}`; const sanitizedText = comment.commentText.replace(/</g, "<").replace(/>/g, ">"); element.innerHTML = `<div class="comment-header"><span class="comment-author">${comment.username.replace(/</g, "<")}</span><span class="comment-date"> - ${date}</span></div><p class="comment-body">${sanitizedText}</p><div class="comment-actions">${createReactionButtons(comment.reactions, comment.commentID)}<button class="reply-btn">Reply</button>${repliesButton}</div><div class="reply-form-container"></div><div class="replies-container"></div>`; return element; }; const renderDisplayedComments = () => { const currentScroll = commentsContainer.scrollTop; commentsContainer.innerHTML = ''; const commentsToRender = allRootComments.slice(0, displayedCommentsCount); if (commentsToRender.length === 0) { commentsContainer.innerHTML = '<p id="status-message">Be the first to comment!</p>'; } else { commentsToRender.forEach(comment => commentsContainer.appendChild(createCommentElement(comment))); } commentsContainer.scrollTop = currentScroll; loadMoreBtn.classList.toggle('hidden', displayedCommentsCount >= allRootComments.length); }; const postData = (payload) => { fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(console.error); }; const fetchAllData = async () => { statusMessage.textContent = 'Fetching comments...'; try { const response = await fetch(`${WEB_APP_URL}?videoID=${encodeURIComponent(CURRENT_VIDEO_ID)}`); if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`); const data = await response.json(); if (data.error) throw new Error(data.error); videoReactionBar.innerHTML = createReactionButtons(data.videoReactions?.reactions || {}, VIDEO_METADATA_ID); const comments = data.comments || []; const calculateScore = (c) => (Object.values(c.reactions || {}).reduce((a, b) => a + b, 0)) + ((c.replies || []).length * 2); comments.sort((a, b) => calculateScore(b) - calculateScore(a)); const top5 = comments.slice(0, 5); const latest = comments.slice(5).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); allRootComments = [...top5, ...latest]; displayedCommentsCount = Math.min(allRootComments.length, INITIAL_LOAD_COUNT); renderDisplayedComments(); } catch (error) { statusMessage.textContent = 'Could not load comments.'; console.error("Error Fetching Comment Data:", error); } }; fetchAllData(); const handleInputFocus = (event) => { setTimeout(() => { event.target.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300); }; mainCommentInput.addEventListener('focus', handleInputFocus); document.getElementById('submit-comment-btn').addEventListener('click', () => { const text = mainCommentInput.value.trim(); if (!text) return; const optimisticComment = { commentID: `temp-${Date.now()}`, username: 'You', commentText: text, reactions: {}, replies: [], isOptimistic: true }; allRootComments.unshift(optimisticComment); if (displayedCommentsCount < INITIAL_LOAD_COUNT) displayedCommentsCount++; renderDisplayedComments(); mainCommentInput.value = ''; postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, userID: USER_ID, username: 'Anonymous', commentText: text }); }); videoReactionBar.addEventListener('click', (e) => { const reactionBtn = e.target.closest('.reaction-btn'); if (!reactionBtn || reactionBtn.disabled) return; const id = reactionBtn.dataset.id; const reactionType = reactionBtn.dataset.reactionType; localStorage.setItem(`reacted-${id}`, reactionType); const countSpan = reactionBtn.querySelector('.count'); countSpan.textContent = parseInt(countSpan.textContent) + 1; reactionBtn.classList.add('popping', 'reacted'); videoReactionBar.querySelectorAll('.reaction-btn').forEach(btn => { btn.disabled = true; if(btn.dataset.reactionType !== reactionType) { btn.style.filter = 'saturate(0)'; } }); postData({ action: 'addReaction', commentID: id, reactionType: reactionType }); }); loadMoreBtn.addEventListener('click', () => { displayedCommentsCount = Math.min(allRootComments.length, displayedCommentsCount + LOAD_MORE_COUNT); renderDisplayedComments(); }); commentsContainer.addEventListener('focusin', (e) => { if (e.target.matches('.reply-form-container textarea')) { handleInputFocus(e); } }); commentsContainer.addEventListener('click', (e) => { const target = e.target; const commentElement = target.closest('.comment'); if (!commentElement) return; const commentId = commentElement.id.replace('comment-', ''); if (target.matches('.reaction-btn, .reaction-btn *')) { const reactionBtn = target.closest('.reaction-btn'); if (reactionBtn.disabled) return; const id = reactionBtn.dataset.id; const reactionType = reactionBtn.dataset.reactionType; localStorage.setItem(`reacted-${id}`, reactionType); reactionBtn.classList.add('popping'); renderDisplayedComments(); postData({ action: 'addReaction', commentID: id, reactionType: reactionType }); } if (target.matches('.reply-btn')) { const formContainer = commentElement.querySelector('.reply-form-container'); if(formContainer.innerHTML === '') { formContainer.innerHTML = `<textarea placeholder="Write a reply..."></textarea><button class="submit-reply-btn" data-parent-id="${commentId}">Post Reply</button>`; formContainer.querySelector('textarea').focus(); } else { formContainer.innerHTML = ''; } } if (target.matches('.show-replies-btn')) { const repliesContainer = commentElement.querySelector('.replies-container'); const isHidden = repliesContainer.style.display === 'none' || repliesContainer.style.display === ''; if (isHidden) { const parentCommentData = allRootComments.find(c => c.commentID === commentId); if (parentCommentData && parentCommentData.replies && parentCommentData.replies.length > 0) { repliesContainer.innerHTML = ''; parentCommentData.replies.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)).forEach(reply => repliesContainer.appendChild(createCommentElement(reply))); repliesContainer.style.display = 'block'; target.textContent = 'Hide replies'; } } else { repliesContainer.style.display = 'none'; target.textContent = `Show ${target.dataset.numReplies} replies`; } } if (target.matches('.submit-reply-btn')) { const textarea = target.previousElementSibling; const text = textarea.value.trim(); if (!text) return; target.disabled = true; const parentId = target.dataset.parentId; const optimisticReply = { commentID: `temp-reply-${Date.now()}`, username: 'You', commentText: text, reactions: {}, isOptimistic: true, replies: [] }; const repliesContainer = commentElement.querySelector('.replies-container'); if(repliesContainer.style.display === 'none') repliesContainer.style.display = 'block'; repliesContainer.appendChild(createCommentElement(optimisticReply)); textarea.parentElement.innerHTML = ''; postData({ action: 'addComment', videoID: CURRENT_VIDEO_ID, parentID: parentId, userID: USER_ID, username: 'Anonymous', commentText: text }); } }); })();
     </script>
-    <!-- ======== END: FULL, UNTOUCHED COMMENT SYSTEM SCRIPT ======== -->
 </body>
 </html>
