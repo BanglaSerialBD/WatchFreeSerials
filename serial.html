@@ -382,11 +382,11 @@
                 // Change the link to your app or file here
                 button.href = 'https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/7d497252af2c3392033711228645bfd2bbf876c3/BanglaSerial.apk';
                 
+                // THIS IS THE NEW LINE THAT FIXES THE PROBLEM
+                button.target = '_blank';
+                
                 button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z"/></svg><span>${content.buttonText}</span>`;
                 buttonPlaceholder.appendChild(button);
-
-            } else { 
-                document.getElementById('promo-box').classList.add('hidden');
             }
         });
     </script>
