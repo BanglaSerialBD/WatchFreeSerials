@@ -368,7 +368,8 @@
             const userLang = (navigator.language || 'en').split('-')[0];
             const langPack = promoTranslations[userLang] || promoTranslations['en'];
 
-            if (!currentUserAgent.includes(appIdentifier)) {
+                        if (!currentUserAgent.includes(appIdentifier)) {
+                // This code runs ONLY in external browsers (Chrome, Facebook, etc.)
                 const content = langPack.browser;
                 if (!content) return; // Failsafe if a language pack is malformed
 
@@ -379,14 +380,25 @@
                 const button = document.createElement('a');
                 button.className = 'smart-download-button';
                 
-                // Change the link to your app or file here
+                // Set the link to your app
                 button.href = 'https://raw.githubusercontent.com/BanglaSerialBD/WatchFreeSerials/7d497252af2c3392033711228645bfd2bbf876c3/BanglaSerial.apk';
                 
-                // THIS IS THE NEW LINE THAT FIXES THE PROBLEM
+                // FIX #1: Open in a new tab (for Facebook/Messenger)
                 button.target = '_blank';
+
+                // FIX #2: Add the 'download' attribute to force download on PC
+                button.download = 'BanglaSerial.apk'; 
                 
                 button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M3 19h18v2H3v-2zm10-5.828L19.071 7.1l1.414 1.414L12 17 3.515 8.515 4.929 7.1 11 13.17V2h2v11.172z"/></svg><span>${content.buttonText}</span>`;
                 buttonPlaceholder.appendChild(button);
+
+            } else { 
+                // This code runs ONLY in your app
+                // FIX #3: Completely remove the promo box so no empty container shows up
+                const promoBox = document.getElementById('promo-box');
+                if (promoBox) {
+                    promoBox.remove();
+                }
             }
         });
     </script>
